@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerSiteNavigate">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.site.PlayerSiteNavigate">
+		<id column="site_navigate_id" property="siteNavigateId"/> 
+		<result column="creater" property="creater"/>
+		<result column="updater" property="updater"/>
+		<result column="create_time" property="createTime"/>	
+		<result column="update_time" property="updateTime"/>	
+		<result column="title" property="title"/>	
+		<result column="remark" property="remark"/>	
+		<result column="site_url" property="siteUrl"/>	
+		<result column="sort" property="sort"/>	
+		<result column="img_url" property="imgUrl"/>	
+		<result column="status" property="status"/>	
+		<result column="country_code" property="countryCode"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		site_navigate_id, 
+		creater,
+		updater,
+		create_time,
+		update_time,
+		title,
+		remark,
+		site_url,
+		sort,
+		img_url,
+		status,
+		country_code
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.site.PlayerSiteNavigate">
+		insert into zed_player_site_navigate (
+			site_navigate_id, 
+			creater,
+			updater,
+			create_time,
+			update_time,
+			title,
+			remark,
+			site_url,
+			sort,
+			img_url,
+			status,
+			country_code
+		) 
+		values (
+			#{siteNavigateId}, 
+			#{creater}, 
+			#{updater}, 
+			#{createTime}, 
+			#{updateTime}, 
+			#{title}, 
+			#{remark}, 
+			#{siteUrl}, 
+			#{sort},
+			#{imgUrl},
+			#{status},
+			#{countryCode}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.site.PlayerSiteNavigate">
+		update zed_player_site_navigate
+		 set 
+		 <if test="title != null and title != ''">
+			title = #{title} ,
+		 </if>
+		 <if test="remark != null and remark != ''">
+			remark = #{remark} ,
+		 </if>
+		 <if test="siteUrl != null and siteUrl != ''">
+			site_url = #{siteUrl},
+		 </if>
+		 <if test="imgUrl != null and imgUrl != ''">
+			img_url = #{imgUrl},
+		 </if>
+		 <if test="status != null">
+			status = #{status},
+		 </if>
+		 <if test="sort != null">
+			sort = #{sort},
+		 </if>
+		 <if test="countryCode != null">
+			country_code = #{countryCode},
+		 </if>
+			update_time = #{updateTime},
+			updater = #{updater}
+		 where site_navigate_id = #{siteNavigateId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_site_navigate where site_navigate_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_site_navigate
+		where site_navigate_id = #{siteNavigateId}
+	</select>
+	
+	<select id="findByIds" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_site_navigate
+		where site_navigate_id in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_site_navigate
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_site_navigate
+		<where>
+			1=1
+			<if test="title != null and title != ''">
+				 and title like '%${title}%'
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="countryCode != null">
+				 and country_code = #{countryCode}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_site_navigate
+		<where>
+			1=1
+			<if test="title != null and title != ''">
+				 and title like '%${title}%'
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="countryCode != null">
+				 and country_code = #{countryCode}
+			</if>
+		</where>
+	</select>
+		
+</mapper>

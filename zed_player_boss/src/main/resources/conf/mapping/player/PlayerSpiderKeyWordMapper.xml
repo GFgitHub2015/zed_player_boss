@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerSpiderKeyWord">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.spiderkeyword.PlayerSpiderKeyWord">
+		<id column="keyword_id" property="keywordId"/> 
+		<result column="status" property="status"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="updater" property="updater"/>
+		<result column="keyword" property="keyword"/>
+		<result column="retry" property="retry"/>
+		<result column="area_code" property="areaCode"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		keyword_id, 
+		status,
+		create_time,
+		keyword,
+		update_time,
+		updater,
+		retry,
+		area_code
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.spiderkeyword.PlayerSpiderKeyWord">
+		insert into zed_player_spider_keyword (
+			keyword_id, 
+			status,
+			create_time,
+			keyword,
+			update_time,
+			updater,
+			retry,
+			area_code
+		) 
+		values (
+			#{keywordId}, 
+			#{status},
+			#{createTime}, 
+			#{keyword}, 
+			#{updateTime},
+			#{updater}, 
+			#{retry}, 
+			#{areaCode}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.spiderkeyword.PlayerSpiderKeyWord">
+		update zed_player_spider_keyword
+			<set>
+				<if test="status != null">
+					status = #{status} ,
+				</if>
+				<if test="updater != null and updater != ''">
+					updater = #{updater},
+				</if>
+				<if test="retry != null">
+					retry = #{retry},
+				</if>
+				<if test="createTime != null">
+					create_time = #{createTime},
+				</if>
+				<if test="keyword != null and keyword != ''">
+					keyword = #{keyword},
+				</if>
+				<if test="areaCode != null and areaCode != ''">
+					area_code = #{areaCode},
+				</if>
+				<if test="createTime != null">
+					update_time = #{updateTime},
+				</if>
+				<if test="updater != null and updater != ''">
+					updater = #{updater},
+				</if>
+			</set> 
+		 where keyword_id = #{keywordId}
+	</update>
+	
+	<update id="updateStatus" parameterType="com.zed.domain.player.spiderkeyword.PlayerSpiderKeyWord">
+		update zed_player_spider_keyword
+		 set 
+			status = #{status},
+			update_time = #{updateTime},
+			updater = #{updater}
+		 where keyword_id = #{keywordId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_spider_keyword where keyword_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_spider_keyword 
+		where keyword_id = #{keywordId}
+	</select>
+	
+	<select id="findAllByIds" resultMap="Base_Result_Model" parameterType="String">
+		select
+		<include refid="selectId"/>
+		from zed_player_spider_keyword 
+		where keyword_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+				update zed_player_spider_keyword
+		 		<set>
+					<if test="status != null">
+						status = #{item.status} ,
+					</if>
+					<if test="updater != null and updater != ''">
+						updater = #{item.updater},
+					</if>
+					<if test="retry != null">
+						retry = #{item.retry},
+					</if>
+					<if test="createTime != null">
+						create_time = #{item.createTime},
+					</if>
+					<if test="keyword != null and keyword != ''">
+						keyword = #{item.keyword},
+					</if>
+					<if test="areaCode != null and areaCode != ''">
+						area_code = #{item.areaCode},
+					</if>
+					<if test="createTime != null">
+						update_time = #{item.updateTime},
+					</if>
+					<if test="updater != null and updater != ''">
+						updater = #{item.updater},
+					</if>
+				</set> 
+				 where keyword_id = #{item.keywordId}
+    	</foreach>
+	</update>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId"/>
+		from zed_player_spider_keyword
+		<where>
+			1=1
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				 and keyword like '%${keyword}%'
+			</if>
+			<if test="areaCode != null and areaCode != ''">
+				 and area_code = #{areaCode}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_spider_keyword
+		<where>
+			1=1
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				 and keyword like '%${keyword}%'
+			</if>
+			<if test="areaCode != null and areaCode != ''">
+				 and area_code = #{areaCode}
+			</if>
+		</where>
+	</select>
+	
+	<select id="deleteAll">
+    <![CDATA[
+        TRUNCATE zed_player_spider_keyword
+    ]]>   
+	</select>
+	
+	<select id="addBatch" parameterType="java.util.List">  
+	    insert into zed_player_spider_keyword(
+			keyword_id, 
+			status,
+			create_time,
+			keyword,
+			update_time,
+			updater,
+			retry,
+			area_code
+		) values
+	    <foreach collection="list" item="item" index="index" separator=",">  
+	      (
+	      	#{item.keywordId}, 
+			#{item.status},
+			#{item.createTime}, 
+			#{item.keyword}, 
+			#{item.updateTime},
+			#{item.updater}, 
+			#{item.retry}, 
+			#{item.areaCode}
+	      )
+	    </foreach>  
+    </select>
+		
+</mapper>

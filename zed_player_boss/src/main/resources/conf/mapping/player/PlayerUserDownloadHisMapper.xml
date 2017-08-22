@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerUserDownloadHis">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.downloadhis.PlayerUserDownloadHis">
+		<id column="user_his_id" property="userHisId"/> 
+		<result column="user_id" property="userId"/>	
+		<result column="his_id" property="hisId"/>	
+		<result column="status" property="status"/>	
+		<result column="create_time" property="createTime"/>	
+		<result column="update_time" property="updateTime"/>	
+		<result column="task_type" property="taskType"/>	
+		<result column="file_id" property="fileId"/>	
+		<result column="parent_file_id" property="parentFileId"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		user_his_id, 
+		user_id,
+		his_id,
+		status,
+		create_time,
+		update_time,
+		task_type,
+		file_id,
+		parent_file_id
+	</sql>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_user_download_his
+		where user_his_id = #{userHisId}
+	</select>
+	
+	<select id="findHisIdByUserId" resultType="String">
+		select
+		his_id
+		from zed_player_user_download_his
+		where user_id = #{userId}
+	</select>
+	
+</mapper>

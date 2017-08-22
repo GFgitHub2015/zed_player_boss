@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+   	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+   	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:conf/redis.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 对象池配置： -->
+	<bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"
+		lazy-init="true">
+		<property name="maxTotal" value="${redis.pool.maxTotal}" />
+		<property name="maxIdle" value="${redis.pool.maxIdle}" />
+		<property name="maxWaitMillis" value="${redis.pool.maxWait}" />
+		<property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+	</bean>
+
+
+	<bean id="redisClusterConfiguration"
+		class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+		<constructor-arg>
+			<bean class="org.springframework.core.env.MapPropertySource">
+				<constructor-arg index="0" value="RedisClusterConfiguration" />
+				<constructor-arg index="1">
+					<map>
+						<entry key="spring.redis.cluster.nodes" value="${redis.cluster.nodes}"></entry>
+						<entry key="spring.redis.cluster.timeout" value="${redis.cluster.timeout}"></entry>
+						<entry key="spring.redis.cluster.max-redirects" value="${redis.cluster.max-redirects}"></entry>
+						<entry key="spring.redis.cluster.password" value="${redis.cluster.password}"></entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="jedisConnFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:use-pool="true">
+
+		<constructor-arg ref="redisClusterConfiguration" />
+
+		<constructor-arg ref="redisPoolConfig" />
+
+	</bean>
+
+	<bean id="cacheRedis" class="org.springframework.data.redis.core.StringRedisTemplate"
+		p:connection-factory-ref="jedisConnFactory" />
+</beans>

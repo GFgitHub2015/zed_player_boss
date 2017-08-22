@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="loginrecord" namespace="/loginrecord" extends="common">
+	  
+        <action name="*" class="loginRecordAction" method="{1}">
+	    	<result name="success" >/WEB-INF/views/contents/account/loginrecord/{1}.jsp</result>
+		</action>
+	</package>
+
+</struts>

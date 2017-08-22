@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="common" namespace="" extends="myStruts">        
+		<global-results>
+			<result name="error">/WEB-INF/views/contents/error.jsp</result>
+			<result name="ok">/WEB-INF/views/contents/ok.jsp</result>
+			<result name="result">/WEB-INF/views/contents/result.jsp</result>
+		    <result name="errorNoLogin">/WEB-INF/views/contents/loginError.jsp</result>
+		    <result name="input">/WEB-INF/views/contents/error.jsp</result>
+		    <result name="invalid.token">/WEB-INF/views/contents/error.jsp</result>
+	    </global-results>
+	    
+	   	<action name="index" class="indexAction">
+	    	<result name="success">/WEB-INF/views/contents/index.jsp</result>
+		</action>
+	
+		<action name="login" class="loginAction">
+			<result name="success">/WEB-INF/views/contents/login.jsp</result>
+	    </action>
+	    	    
+	    <action name="loginProcess" class="loginProcessAction">	    
+            <result name="success" type="redirect">frame.action</result>            
+        </action>
+	    
+	    <action name="frame" class="frameAction">
+            <result name="success">/WEB-INF/views/contents/frame.jsp</result>
+        </action>
+        
+        <action name="main" class="mainAction">
+            <result name="success">/WEB-INF/views/contents/main.jsp</result>
+        </action>
+        
+        <action name="logoff" class="logoffAction">
+	    	<result name="success">/WEB-INF/views/contents/index.jsp</result>
+        </action>
+        
+        <action name="left" class="leftAction">
+	    	 <result name="success">/WEB-INF/views/contents/left.jsp</result>
+        </action>
+        
+	    <action name="top" class="topAction">
+	       <result name="success">/WEB-INF/views/contents/top.jsp</result>
+	    </action>
+        		
+		<action name="captcha" class="captchaAction">
+	    	 <result name="success">/WEB-INF/views/contents/image.jsp</result>
+        </action>
+	
+	</package>
+
+</struts>

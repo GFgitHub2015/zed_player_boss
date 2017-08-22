@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.AdminLogin">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.system.AdminLogin">
+		<result column="admin_id" property="adminId"/>
+		<result column="login_time" jdbcType="DATE" property="loginTime"/>
+		<result column="login_ip" property="loginIp"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId"> 
+		lg.admin_id , 
+		lg.login_time,
+		lg.login_ip
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.system.AdminLogin">
+		insert into zed_admin_login_info (admin_id, login_time, login_ip) 
+		values (#{adminId}, #{loginTime}, #{loginIp})
+	</insert>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_admin_login_info 
+		<where>
+			<if test="adminId != null and adminId != ''">
+				admin_id like '%${adminId}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_admin_login_info 
+		<where>
+			<if test="adminId != null and adminId != ''">
+				admin_id like '%${adminId}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="findLastLoginTime" parameterType="String" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId" />
+		from zed_admin u , zed_admin_login_info lg
+		where
+		lg.admin_id = u.admin_id 
+		and u.admin_id =#{adminId}
+		order by lg.login_time desc limit 1
+	</select>
+		
+</mapper>

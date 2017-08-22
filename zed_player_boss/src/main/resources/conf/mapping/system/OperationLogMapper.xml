@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.OperationLog"> 
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="createdBy != null and createdBy != ''"> and created_by = #{createdBy}</if>
+				<if test="beginTime != null"> and date_format(operation_time, '%Y-%m-%d') &gt;= #{beginTime}</if>
+				<if test="endTime != null"> and date_format(operation_time, '%Y-%m-%d') &lt;= #{endTime}</if>
+			</trim>
+		</where>
+	</sql>
+	
+	<sql id = "SELECT_COLUMN">
+    id,
+		operation_menu,
+		content,
+		ip,
+		operation_time,
+		created_by
+  </sql>
+	
+	<resultMap type="HashMap" id="logMap">
+	  <id property="id" column="id"/>
+    <result property="ip" column="ip"/>
+    <result property="operationMenu" column="operation_menu"/>
+    <result property="content" column="content"/>
+    <result property="operationTime" column="operation_time"/>
+    <result property="createdBy" column="created_by"/>
+	</resultMap>
+	
+	<insert id="add" parameterType="com.zed.domain.system.OperationLog">
+		insert into zed_operation_log(
+			id,
+			ip,
+			operation_menu,
+			content,
+			operation_time,
+			created_by
+		)values(
+			func_getseq('zed_operation_log'),
+			#{ip},
+			#{operationMenu},
+			#{content},
+			#{operationTime},
+			#{createdBy}
+		)
+	</insert>
+	
+	<select id="addBatch" parameterType="java.util.List">  
+	    insert into zed_operation_log(
+			id,
+			ip,
+			operation_menu,
+			content,
+			operation_time,
+			created_by
+		) values
+	    <foreach collection="list" item="item" index="index" separator=",">  
+	      (
+	      	func_getseq('zed_operation_log'),
+	      	#{item.ip},
+			#{item.operationMenu},
+			#{item.content},
+			#{item.operationTime},
+			#{item.createdBy}
+	      )
+	    </foreach>  
+    </select>
+	
+	<update id="update" parameterType="com.zed.domain.system.OperationLog">
+		update zed_operation_log 
+    <set>
+        <if test="operationMenu != null">operation_menu = #{operationMenu},</if>
+        <if test="content != null">content = #{content},</if>
+        <if test="createdBy != null and createdBy != null">created_by = #{createdBy},</if>
+        <if test="operationTime != null">operation_time = #{operationTime},</if>
+      </set>
+      where id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_operation_log where id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+      #{idItem}
+    </foreach>
+	</delete>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1) from zed_operation_log 
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<select id="findListByPage" resultMap="logMap">
+		select 
+		<include refid="SELECT_COLUMN" />
+		from zed_operation_log 
+		<include refid="Base_Where_Clause" />
+		<if test="sorting != null"> order by ${sorting} </if>
+		<if test="offset != null and limit != null"> limit #{offset},#{limit}</if>
+	</select>
+	
+	<select id="findById" resultMap="logMap" parameterType="String" >
+		select 
+    <include refid="SELECT_COLUMN" />
+    from zed_operation_log where id = #{id}
+	</select>
+</mapper>

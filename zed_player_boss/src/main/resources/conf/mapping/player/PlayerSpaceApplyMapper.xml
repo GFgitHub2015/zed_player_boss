@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerSpaceApply">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.spaceapply.PlayerSpaceApply">
+		<id column="id" property="id"/> 
+		<result column="company_name" property="companyName"/>	
+		<result column="video_site_url" property="videoSiteUrl"/>	
+		<result column="name" property="name"/>	
+		<result column="area_code" property="areaCode"/>	
+		<result column="phone" property="phone"/>	
+		<result column="email" property="email"/>	
+		<result column="status" property="status"/>	
+		<result column="create_time" property="createTime"/>	
+		<result column="user_id" property="userId"/>	
+		<result column="website_link" property="websiteLink"/>	
+		<result column="movies_num" property="moviesNum"/>	
+		<result column="country_name" property="countryName"/>	
+		<result column="app" property="app"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		id, 
+		company_name,
+		video_site_url,
+		name,
+		area_code,
+		phone,
+		email,
+		status,
+		create_time,
+		user_id,
+		website_link,
+		movies_num,
+		country_name,
+		app
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.spaceapply.PlayerSpaceApply">
+		insert into zed_player_space_apply 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				id, 
+			</if>
+			<if test="companyName != null" >
+				company_name,
+			</if>
+			<if test="videoSiteUrl != null" >
+				video_site_url,
+			</if>
+			<if test="name != null" >
+				name,
+			</if>
+			<if test="areaCode != null" >
+				area_code,
+			</if>
+			<if test="phone != null" >
+				phone,
+			</if>
+			<if test="email != null" >
+				email,
+			</if>
+			<if test="status != null" >
+				status,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="userId != null" >
+				user_id,
+			</if>
+			<if test="websiteLink != null" >
+				website_link,
+			</if>
+			<if test="moviesNum != null" >
+				movies_num,
+			</if>
+			<if test="countryName != null" >
+				country_name,
+			</if>
+			<if test="app != null" >
+				app,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				#{id}, 
+			</if>
+			<if test="companyName != null" >
+				#{companyName}, 
+			</if>
+			<if test="videoSiteUrl != null" >
+				#{videoSiteUrl}, 
+			</if>
+			<if test="name != null" >
+				#{name}, 
+			</if>
+			<if test="areaCode != null" >
+				#{areaCode}, 
+			</if>
+			<if test="phone != null" >
+				#{phone}, 
+			</if>
+			<if test="email != null" >
+				#{email}, 
+			</if>
+			<if test="status != null" >
+				#{status}, 
+			</if>
+			<if test="createTime != null" >
+				#{createTime}, 
+			</if>
+			<if test="userId != null" >
+				#{userId}, 
+			</if>
+			<if test="websiteLink != null" >
+				#{websiteLink}, 
+			</if>
+			<if test="moviesNum != null" >
+				#{moviesNum}, 
+			</if>
+			<if test="countryName != null" >
+				#{countryName}, 
+			</if>
+			<if test="app != null" >
+				#{app}, 
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.spaceapply.PlayerSpaceApply">
+		update zed_player_space_apply
+		 <set>
+			<if test="companyName != null" >
+				company_name = #{companyName},
+			</if>
+			<if test="videoSiteUrl != null" >
+				video_site_url = #{videoSiteUrl},
+			</if>
+			<if test="name != null" >
+				name = #{name},
+			</if>
+			<if test="areaCode != null" >
+				area_code = #{areaCode},
+			</if>
+			<if test="phone != null" >
+				phone = #{phone},
+			</if>
+			<if test="email != null" >
+				email = #{email},
+			</if>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="userId != null" >
+				user_id = #{userId},
+			</if>
+			<if test="websiteLink != null" >
+				website_link = #{websiteLink},
+			</if>
+			<if test="moviesNum != null" >
+				movies_num = #{moviesNum},
+			</if>
+			<if test="countryName != null" >
+				country_name = #{countryName},
+			</if>
+			<if test="app != null" >
+				app= #{app},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_space_apply
+		where id = #{id}
+	</select>
+	
+	<select id="findByUserId" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_space_apply
+		where user_id = #{userId}
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_space_apply
+		<where>
+			1=1
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_space_apply
+		<where>
+			1=1
+		</where>
+	</select>
+	
+	<select id="findByStatus" resultMap="Base_Result_Model">
+	    select 
+	    <include refid="selectId"/>
+	    from zed_player_space_apply
+	</select>
+		
+</mapper>

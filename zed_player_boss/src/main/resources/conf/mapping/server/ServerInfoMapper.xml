@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.ServerInfo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.server.serverinfo.ServerInfo">
+		<id column="info_id" property="infoId"/> 
+		<result column="info_id" property="infoId"/>
+		<result column="server_address" property="serverAddress"/>
+		<result column="area_code" property="areaCode"/>
+		<result column="area_name" property="areaName"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="creater" property="creater"/>
+		<result column="updater" property="updater"/>
+		<result column="origin" property="origin"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		info_id, 
+		server_address,
+		area_code,
+		area_name,
+		create_time,
+		update_time,
+		creater,
+		origin,
+		updater
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.server.serverinfo.ServerInfo">
+		insert into zed_server_info (
+			info_id, 
+			server_address,
+			area_code,
+			area_name,
+			create_time,
+			update_time,
+			creater,
+			updater,
+			origin
+		) 
+		values (
+			#{infoId}, 
+			#{serverAddress}, 
+			#{areaCode}, 
+			#{areaName}, 
+			#{createTime}, 
+			#{updateTime}, 
+			#{creater}, 
+			#{updater},
+			#{origin}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.server.serverinfo.ServerInfo">
+		update zed_server_info
+		 set 
+		 <if test="areaCode != null and areaCode != ''">
+			area_code = #{areaCode} ,
+		 </if>
+		 <if test="serverAddress != null and serverAddress != ''">
+			server_address = #{serverAddress} ,
+		 </if>
+		 <if test="areaName != null and areaName != ''">
+			area_name = #{areaName},
+		 </if>
+		 <if test="origin != null">
+			origin = #{origin},
+		 </if>
+			update_time = #{updateTime},
+			updater = #{updater}
+		 where info_id = #{infoId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_server_info where info_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_server_info
+		where info_id = #{infoId}
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_server_info
+		<where>
+			1=1
+			<if test="serverAddress != null and serverAddress!=''">
+				 and server_address = #{serverAddress}
+			</if>
+			<if test="areaCode != null and areaCode !=''">
+				 and area_code = #{areaCode} 
+			</if>
+			<if test="origin != null and origin !=''">
+				 and origin = #{origin} 
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_server_info
+		<where>
+			1=1
+			<if test="serverAddress != null and serverAddress!=''">
+				 and server_address = #{serverAddress}
+			</if>
+			<if test="areaCode != null and areaCode !=''">
+				 and area_code = #{areaCode} 
+			</if>
+			<if test="origin != null and origin !=''">
+				 and origin = #{origin} 
+			</if>
+		</where>
+	</select>
+		
+</mapper>

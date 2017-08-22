@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.AdminRole"> 
+	
+	<insert id="addAdminRole" parameterType="com.zed.domain.system.AdminRole">
+		insert into zed_admin_role
+		(admin_id,role_id,created_by,created_time,updated_by,updated_time) 
+		values 
+		(#{adminId},#{roleId},#{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime})
+	</insert>
+	
+	<delete id="deleteAdminRole" parameterType="String">
+		delete from zed_admin_role 
+		where 
+		admin_id=#{adminId}
+	</delete>
+
+</mapper>

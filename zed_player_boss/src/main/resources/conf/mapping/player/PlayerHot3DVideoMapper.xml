@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.Hot3DVideo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.hotvideo.Hot3DVideo">
+		<id column="uid" property="uid"/> 
+		<result column="video_name" property="videoName" />
+		<result column="file_id" property="fileId" />
+		<result column="play_time" property="playTime" />
+		<result column="icon_url" property="iconUrl" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="video_state" property="videoState" />
+		<result column="hot_reason" property="hotReason" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+		<result column="tag_type" property="tagType" />
+		<result column="play_times_real" property="playTimesReal" />
+		<result column="down_times" property="downTimes" />
+		<result column="country_code" property="countryCode" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		uid,video_name,file_id,play_time,icon_url,start_time,end_time,video_state,hot_reason,create_user,create_time,update_user,update_time,tag_type,country_code
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.hotvideo.Hot3DVideo">
+		insert into zed_player_hot_video_3d
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				uid,
+			</if>
+			<if test="videoName != null" >
+				video_name,
+			</if>
+			<if test="fileId != null" >
+				file_id,
+			</if>
+			<if test="playTime != null" >
+				play_time,
+			</if>
+			<if test="iconUrl != null" >
+				icon_url,
+			</if>
+			<if test="startTime != null" >
+				start_time,
+			</if>
+			<if test="endTime != null" >
+				end_time,
+			</if>
+			<if test="videoState != null" >
+				video_state,
+			</if>
+			<if test="hotReason != null" >
+				hot_reason,
+			</if>
+			<if test="createUser != null" >
+				create_user,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="updateUser != null" >
+				update_user,
+			</if>
+			<if test="updateTime != null" >
+				update_time,
+			</if>
+			<if test="tagType != null" >
+				tag_type,
+			</if>
+			<if test="countryCode != null" >
+				country_code,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				#{uid},
+			</if>
+			<if test="videoName != null" >
+				#{videoName},
+			</if>
+			<if test="fileId != null" >
+				#{fileId},
+			</if>
+			<if test="playTime != null" >
+				#{playTime},
+			</if>
+			<if test="iconUrl != null" >
+				#{iconUrl},
+			</if>
+			<if test="startTime != null" >
+				#{startTime},
+			</if>
+			<if test="endTime != null" >
+				#{endTime},
+			</if>
+			<if test="videoState != null" >
+				#{videoState},
+			</if>
+			<if test="hotReason != null" >
+				#{hotReason},
+			</if>
+			<if test="createUser != null" >
+				#{createUser},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateUser != null" >
+				#{updateUser},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="tagType != null" >
+				#{tagType},
+			</if>
+			<if test="countryCode != null" >
+				#{countryCode},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.hotvideo.Hot3DVideo">
+		update zed_player_hot_video_3d
+		<set>
+			<if test="videoName != null" >
+				video_name = #{videoName},
+			</if>
+			<if test="fileId != null" >
+				file_id = #{fileId},
+			</if>
+			<if test="playTime != null" >
+				play_time = #{playTime},
+			</if>
+			<if test="iconUrl != null" >
+				icon_url = #{iconUrl},
+			</if>
+			<if test="startTime != null" >
+				start_time = #{startTime},
+			</if>
+			<if test="endTime != null" >
+				end_time = #{endTime},
+			</if>
+			<if test="videoState != null" >
+				video_state = #{videoState},
+			</if>
+			<if test="hotReason != null" >
+				hot_reason = #{hotReason},
+			</if>
+			<if test="createUser != null" >
+				create_user = #{createUser},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="updateUser != null" >
+				update_user = #{updateUser},
+			</if>
+			<if test="updateTime != null" >
+				update_time = #{updateTime},
+			</if>
+			<if test="tagType != null" >
+				tag_type = #{tagType},
+			</if>
+			<if test="countryCode != null" >
+				country_code = #{countryCode},
+			</if>
+		</set>
+		where uid=#{uid}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_hot_video_3d where uid=#{uid}
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_hot_video_3d where uid=#{uid}
+	</select>
+
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		SELECT a.*,b.times play_times_real,c.times down_times ,a.country_code
+		FROM zed_player_hot_video_3d a 
+		LEFT JOIN zed_player_logical_play_times b ON a.file_id = b.file_id 
+		LEFT JOIN zed_player_logical_download_times c ON a.file_id = c.file_id
+		<where>
+			<if test="videoName != null" >
+				and a.video_name = #{videoName}
+			</if>
+			<if test="videoNameLike != null" >
+				and a.video_name like  concat('%',#{videoNameLike},'%')
+			</if>
+			<if test="fileId != null" >
+				and a.file_id = #{fileId}
+			</if>
+			<if test="playTime != null" >
+				and a.play_time = #{playTime}
+			</if>
+			<if test="iconUrl != null" >
+				and a.icon_url = #{iconUrl}
+			</if>
+			<if test="startTime != null" >
+				and a.start_time = #{startTime}
+			</if>
+			<if test="videoState != null" >
+				and a.video_state = #{videoState}
+			</if>
+			<if test="hotReason != null" >
+				and a.hot_reason = #{hotReason}
+			</if>
+			<if test="createUser != null" >
+				and a.create_user = #{createUser}
+			</if>
+			<if test="createTime != null" >
+				and a.create_time = #{createTime}
+			</if>
+			<if test="updateUser != null" >
+				and a.update_user = #{updateUser}
+			</if>
+			<if test="updateTime != null" >
+				and a.update_time = #{updateTime}
+			</if>
+			<if test="tagType != null" >
+				and a.tag_type = #{tagType} 
+			</if>
+			<if test="countryCode != null and countryCode != ''" >
+				and a.country_code = #{countryCode} 
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_hot_video_3d 
+		<where>
+			<if test="videoName != null" >
+				and video_name = #{videoName}
+			</if>
+			<if test="videoNameLike != null" >
+				and video_name like  concat('%',#{videoNameLike},'%')
+			</if>
+			<if test="fileId != null" >
+				and file_id = #{fileId}
+			</if>
+			<if test="playTime != null" >
+				and play_time = #{playTime}
+			</if>
+			<if test="iconUrl != null" >
+				and icon_url = #{iconUrl}
+			</if>
+			<if test="startTime != null" >
+				and start_time = #{startTime}
+			</if>
+			<if test="videoState != null" >
+			and 	video_state = #{videoState}
+			</if>
+			<if test="hotReason != null" >
+				and hot_reason = #{hotReason}
+			</if>
+			<if test="createUser != null" >
+				and create_user = #{createUser}
+			</if>
+			<if test="createTime != null" >
+				and create_time = #{createTime}
+			</if>
+			<if test="updateUser != null" >
+				and update_user = #{updateUser}
+			</if>
+			<if test="updateTime != null" >
+				and update_time = #{updateTime}
+			</if>
+			<if test="tagType != null" >
+				and tag_type = #{tagType} 
+			</if>
+			<if test="countryCode != null and countryCode != ''" >
+				and country_code = #{countryCode} 
+			</if>
+		</where>
+	</select>
+		
+	<select id="getHotViedeoByVideoId" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_hot_video_3d where file_id=#{fileId}
+	</select>
+</mapper>

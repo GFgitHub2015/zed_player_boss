@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerLogicalFile">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.logicalfile.PlayerLogicalFile">
+		<id column="file_id" property="fileId"/> 
+		<result column="source_file_id" property="sourceFileId"/>	
+		<result column="user_id" property="userId"/>	
+		<result column="status" property="status"/>	
+		<result column="file_name" property="fileName"/>	
+		<result column="share_status" property="shareStatus"/>	
+		<result column="file_size" property="fileSize"/>	
+		<result column="source_type" property="sourceType"/>	
+		<result column="is_file" property="isFile"/>	
+		<result column="file_path" property="filePath"/>	
+		<result column="creater" property="creater"/>	
+		<result column="updater" property="updater"/>	
+		<result column="create_time" property="createTime"/>	
+		<result column="update_time" property="updateTime"/>	
+		<result column="parent_file_id" property="parentFileId"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		file_id, 
+		source_file_id,
+		user_id,
+		creater,
+		updater,
+		create_time,
+		update_time,
+		status,
+		file_name,
+		share_status,
+		file_size,
+		source_type,
+		is_file,
+		parent_file_id,
+		file_path
+	</sql>
+	
+	<!-- <insert id="add" parameterType="com.zed.domain.player.logicalfile.PlayerLogicalFile">
+		insert into zed_player_logical_file (
+			file_id, 
+			source_file_id,
+			user_id,
+			creater,
+			updater,
+			create_time,
+			update_time,
+			status,
+			file_name,
+			share_status,
+			file_size,
+			source_type,
+			is_file,
+			parent_file_id,
+			file_path
+		) 
+		values (
+			#{fileId}, 
+			#{sourceFileId}, 
+			#{userId}, 
+			#{creater}, 
+			#{updater}, 
+			#{createTime}, 
+			#{updateTime}, 
+			#{status}, 
+			#{fileName}, 
+			#{shareStatus}, 
+			#{fileSize}, 
+			#{sourceType}, 
+			#{isFile}, 
+			#{parentFileId}, 
+			#{filePath}
+		)
+	</insert> -->
+	
+	<update id="updateStatus" parameterType="com.zed.domain.player.cdn.PlayerCdn">
+		update zed_player_logical_file
+		 set
+			status = #{status}
+		 where file_id = #{fileId}
+	</update>
+	
+	<update id="update" parameterType="com.zed.domain.player.logicalfile.PlayerLogicalFile">
+		update zed_player_logical_file
+		<set>
+			<if test="status != null">
+				`status` = #{status},
+			</if>
+			<if test="fileName != null and fileName != ''">
+				`file_name` = #{fileName},
+			</if>
+			<if test="updateTime != null and updateTime != ''">
+				`update_time` = #{updateTime}
+			</if>
+		</set>
+		 where file_id = #{fileId}
+	</update>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_logical_file
+		where file_id = #{fileId} and status != -1
+	</select>
+	
+	<select id="findListByIds" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_logical_file
+		where file_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+				update zed_player_logical_file
+		 		set
+					status = #{item.status}
+				 where file_id = #{item.fileId}
+    	</foreach>
+	</update>
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		select 
+			<include refid="selectId"/>
+		from zed_player_logical_file
+		<where>
+			1=1
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_logical_file
+		<where>
+			1=1
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateStatusBatchByUserId" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+			update zed_player_logical_file set status = #{item.status} where user_id = #{item.userId}
+    	</foreach>
+	</update>
+	
+</mapper>

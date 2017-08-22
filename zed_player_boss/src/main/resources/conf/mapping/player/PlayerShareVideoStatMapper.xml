@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.ShareVideoStat">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.sharevideostat.ShareVideoStat">
+		<id column="share_id" property="shareId"  /> 
+		<result column="file_id" property="fileId" />
+		<result column="channel" property="channel" />
+		<result column="package_name" property="packageName" />
+		<result column="share_count" property="shareCount" />
+		<result column="share_pv" property="sharePv" />
+		<result column="share_uv" property="shareUv" />
+		<result column="download_count" property="downloadCount" />
+		<result column="file_name" property="fileName" />
+		<result column="appname" property="appname" />
+		<result column="stat_date" property="statDate" />
+		
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<insert id="add" parameterType="com.zed.domain.player.sharevideostat.ShareVideoStat">
+		insert into zed_player_share_stat
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="shareId != null" >
+				share_id,
+			</if>
+			<if test="fileId != null" >
+				file_id,
+			</if>
+			<if test="channel != null" >
+				channel,
+			</if>
+			<if test="packageName != null" >
+				package_name,
+			</if>
+			<if test="shareCount != null" >
+				share_count,
+			</if>
+			<if test="sharePv != null" >
+				share_pv,
+			</if>
+			<if test="shareUv != null" >
+				share_uv,
+			</if>
+			<if test="downloadCount != null" >
+				download_count,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="shareId != null" >
+				#{shareId},
+			</if>
+			<if test="fileId != null" >
+				#{fileId},
+			</if>
+			<if test="channel != null" >
+				#{channel},
+			</if>
+			<if test="packageName != null" >
+				#{packageName},
+			</if>
+			<if test="shareCount != null" >
+				#{shareCount},
+			</if>
+			<if test="sharePv != null" >
+				#{sharePv},
+			</if>
+			<if test="shareUv != null" >
+				#{shareUv},
+			</if>
+			<if test="downloadCount != null" >
+				#{downloadCount},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.sharevideostat.ShareVideoStat">
+		update zed_player_share_stat
+		<set>
+			<if test="shareId != null" >
+				share_id = #{shareId},
+			</if>
+			<if test="fileId != null" >
+				file_id = #{fileId},
+			</if>
+			<if test="channel != null" >
+				channel = #{channel},
+			</if>
+			<if test="packageName != null" >
+				package_name = #{packageName},
+			</if>
+			<if test="shareCount != null" >
+				share_count = #{shareCount},
+			</if>
+			<if test="sharePv != null" >
+				share_pv = #{sharePv},
+			</if>
+			<if test="shareUv != null" >
+				share_uv = #{shareUv},
+			</if>
+			<if test="downloadCount != null" >
+				download_count = #{downloadCount},
+			</if>
+		</set>
+		where share_id=#{shareId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_share_stat where share_id=#{shareId}
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		*
+		from zed_player_share_stat where  share_id=#{shareId}
+	</select>
+
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		SELECT a.file_id,a.channel,c.param_value appname,b.file_name ,
+		SUM(a.share_count) share_count ,SUM(a.share_pv) share_pv,SUM(a.share_uv) share_uv,SUM(a.download_count) download_count 
+		FROM zed_player_share_stat a 
+		LEFT JOIN zed_player_logical_file b ON a.file_id =  b.file_id 
+		LEFT JOIN zed_player_param c ON a.channel = c.country_code AND c.param_name='appname'
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="fileName != null" >
+				and b.file_name like  concat('%',#{fileName},'%')
+			</if>
+			<if test="shareId != null" >
+				and a.share_id = #{shareId} 
+			</if>
+			<if test="fileId != null" >
+				and a.file_id = #{fileId} 
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+			<if test="packageName != null" >
+				and a.package_name = #{packageName} 
+			</if>
+		</where>
+		GROUP BY a.file_id
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(*) from (
+			select count(1)  FROM zed_player_share_stat a 
+			LEFT JOIN zed_player_logical_file b ON a.file_id =  b.file_id 
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="fileName != null" >
+				and b.file_name like  concat('%',#{fileName},'%')
+			</if>
+			<if test="shareId != null" >
+				and a.share_id = #{shareId} 
+			</if>
+			<if test="fileId != null" >
+				and a.file_id = #{fileId} 
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+			<if test="packageName != null" >
+				and a.package_name = #{packageName} 
+			</if>
+		</where>
+		GROUP BY a.file_id
+		) a 
+	</select>
+		
+		
+	
+	<select id="findPageByDate" resultMap="Base_Result_Model">
+		SELECT a.channel ,b.param_value appname ,SUM(a.share_count) share_count ,SUM(a.share_pv) share_pv,SUM(a.share_uv) share_uv,SUM(a.download_count) download_count 
+		FROM zed_player_share_stat a LEFT JOIN zed_player_param b ON a.channel = b.country_code AND b.param_name='appname'
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+		</where>
+		GROUP BY a.channel 
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findPageByDateCount" resultType="Integer">
+	SELECT COUNT(*) FROM (
+		SELECT count(1) 
+		FROM zed_player_share_stat a 
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+		</where>
+		GROUP BY a.channel 
+		) a 
+	</select>
+	
+	<select id="findPageByDateDetail" resultMap="Base_Result_Model">
+	SELECT a.stat_date  ,SUM(a.share_count) share_count ,SUM(a.share_pv) share_pv,SUM(a.share_uv) share_uv,SUM(a.download_count) download_count 
+	FROM zed_player_share_stat a LEFT JOIN zed_player_param b ON a.channel = b.country_code AND b.param_name='appname'
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+		</where>
+		GROUP BY a.stat_date 
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findPageByDateDetailCount" resultType="Integer">
+	select count(*) from (
+		SELECT count(1) 
+		FROM zed_player_share_stat a 
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+		</where>
+		GROUP BY a.stat_date 
+		) a 
+	</select>
+	
+	
+	<select id="listTotal" resultMap="Base_Result_Model">
+		SELECT  
+		SUM(a.share_count) share_count ,SUM(a.share_pv) share_pv,SUM(a.share_uv) share_uv,SUM(a.download_count) download_count 
+		FROM zed_player_share_stat a 
+		<where>
+			<if test="startDate != null" >
+				and a.stat_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.stat_date &lt;= #{endDate}
+			</if>
+			<if test="channel != null" >
+				and a.channel = #{channel} 
+			</if>
+		</where>
+	</select>
+</mapper>

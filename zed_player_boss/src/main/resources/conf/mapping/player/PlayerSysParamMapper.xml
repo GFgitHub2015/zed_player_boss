@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.SysParam">
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.sysparam.SysParam">
+		<id column="param_id" property="paramId"/> 
+		<result column="param_type" property="paramType" />
+		<result column="param_name" property="paramName" />
+		<result column="param_value" property="paramValue" />
+		<result column="param_dec" property="paramDec" />
+		<result column="country_code" property="countryCode" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="create_user" property="createUser" />
+		<result column="update_user" property="updateUser" />
+		<result column="order_by" property="orderBy" />
+		<result column="appname" property="appname" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		param_id,param_type,param_name,param_value,param_dec,country_code,create_time,update_time,create_user,update_user,order_by
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.sysparam.SysParam" >
+		insert into zed_player_param
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="paramId != null" >
+				param_id,
+			</if>
+			<if test="paramType != null" >
+				param_type,
+			</if>
+			<if test="paramName != null" >
+				param_name,
+			</if>
+			<if test="paramValue != null" >
+				param_value,
+			</if>
+			<if test="paramDec != null" >
+				param_dec,
+			</if>
+			<if test="countryCode != null" >
+				country_code,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="updateTime != null" >
+				update_time,
+			</if>
+			<if test="createUser != null" >
+				create_user,
+			</if>
+			<if test="updateUser != null" >
+				update_user,
+			</if>
+			<if test="orderBy != null" >
+				order_by,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="paramId != null" >
+				#{paramId},
+			</if>
+			<if test="paramType != null" >
+				#{paramType},
+			</if>
+			<if test="paramName != null" >
+				#{paramName},
+			</if>
+			<if test="paramValue != null" >
+				#{paramValue},
+			</if>
+			<if test="paramDec != null" >
+				#{paramDec},
+			</if>
+			<if test="countryCode != null" >
+				#{countryCode},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="createUser != null" >
+				#{createUser},
+			</if>
+			<if test="updateUser != null" >
+				#{updateUser},
+			</if>
+			<if test="orderBy != null" >
+				#{orderBy},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		SELECT  a.*,b.param_value appname  FROM zed_player_param a 
+		LEFT JOIN zed_player_param b ON a.country_code = b.country_code AND b.param_name='appname'
+		<where>
+			1=1
+			<if test="paramType != null" >
+				and a.param_type = #{paramType}
+			</if>
+			<if test="paramName != null" >
+				and a.param_name = #{paramName}
+			</if>
+			<if test="paramNameLike != null" >
+				and a.param_name like concat('%', #{paramNameLike},'%') 
+			</if>
+			<if test="paramValue != null" >
+				and a.param_value = #{paramValue}
+			</if>
+			<if test="paramDec != null" >
+				and a.param_dec = #{paramDec}
+			</if>
+			<if test="countryCode != null" >
+				and a.country_code = #{countryCode}
+			</if>
+			<if test="createUser != null" >
+				and a.create_user = #{createUser}
+			</if>
+			<if test="updateUser != null" >
+				and a.update_user = #{updateUser}
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_param
+		<where>
+			1=1
+			<if test="paramType != null" >
+				and param_type = #{paramType}
+			</if>
+			<if test="paramName != null" >
+				and param_name = #{paramName}
+			</if>
+			<if test="paramNameLike != null" >
+				and param_name like concat('%', #{paramNameLike},'%') 
+			</if>
+			<if test="paramValue != null" >
+				and param_value = #{paramValue}
+			</if>
+			<if test="paramDec != null" >
+				and param_dec = #{paramDec}
+			</if>
+			<if test="countryCode != null" >
+				and country_code = #{countryCode}
+			</if>
+			<if test="createUser != null" >
+				and create_user = #{createUser}
+			</if>
+			<if test="updateUser != null" >
+				and update_user = #{updateUser}
+			</if>
+		</where>
+	</select>
+	
+		
+	<update id="update" parameterType="com.zed.domain.player.sysparam.SysParam">
+		update zed_player_param
+		<set>
+			<if test="paramType != null" >
+				param_type = #{paramType},
+			</if>
+			<if test="paramName != null" >
+				param_name = #{paramName},
+			</if>
+			<if test="paramValue != null" >
+				param_value = #{paramValue},
+			</if>
+			<if test="paramDec != null" >
+				param_dec = #{paramDec},
+			</if>
+			<if test="countryCode != null" >
+				country_code = #{countryCode},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null" >
+				update_time = #{updateTime},
+			</if>
+			<if test="createUser != null" >
+				create_user = #{createUser},
+			</if>
+			<if test="updateUser != null" >
+				update_user = #{updateUser},
+			</if>
+			<if test="orderBy != null" >
+				order_by = #{orderBy},
+			</if>
+		</set>
+		where param_id=#{paramId}
+	</update>
+	
+		
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_param where param_id=#{paramId}
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_param where param_id=#{paramId}
+	</select>
+	
+	<select id="existsSysParam" resultType="Integer">
+		select count(1)
+		from zed_player_param where param_name = #{paramName} and country_code = #{countryCode} 
+		<if test="paramId != null" >
+				and param_id!=#{paramId} 
+		</if>
+	</select>
+</mapper>

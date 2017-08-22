@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerUserHotSort">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.playeruserhotsort.PlayerUserHotSort">
+		<id column="user_sort_id" property="userSortId"/> 
+		<result column="user_id" property="userId"/>	
+		<result column="sort" property="sort"/>	
+		<result column="country_code" property="countryCode"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		user_sort_id, 
+		user_id,
+		sort,
+		country_code
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.playeruserhotsort.PlayerUserHotSort">
+		insert into zed_player_user_hot_sort (
+			user_sort_id, 
+			user_id,
+			sort,
+			country_code
+		) 
+		values (
+			#{userSortId}, 
+			#{userId}, 
+			#{sort}, 
+			#{countryCode}
+		)
+	</insert>
+	
+	<update id="updateSort" parameterType="com.zed.domain.player.playeruserhotsort.PlayerUserHotSort">
+		update zed_player_user_hot_sort
+		 set 
+			sort = #{sort}
+		 where user_sort_id = #{userSortId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_user_hot_sort where user_sort_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteByUserId" parameterType="String">
+		delete from zed_player_user_hot_sort where user_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_user_hot_sort
+		where user_sort_id = #{userSortId}
+	</select>
+	
+	<select id="findByUserId" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_user_hot_sort
+		where user_id = #{userId}
+	</select>
+	
+	<select id="findByCountryCodeWithSort" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_user_hot_sort
+		where sort = #{sort} and country_code = #{countryCode}
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_user_hot_sort
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_user_hot_sort
+		<where>
+			1=1
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+			<if test="countryCode != null">
+				 and country_code = #{countryCode}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_user_hot_sort
+		<where>
+			1=1
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+			<if test="countryCode != null">
+				 and country_code = #{countryCode}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

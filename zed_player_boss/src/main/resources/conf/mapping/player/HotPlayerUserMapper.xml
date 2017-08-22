@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.HotPlayerUser">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.playeruser.HotPlayerUser">
+		<id column="user_id" property="userId"/> 
+		<result column="sign" property="sign"/>	
+		<result column="status" property="status"/>	
+		<result column="create_time" property="createTime"/>	
+		<result column="create_user" property="createUser"/>	
+		<result column="update_time" property="updateTime"/>
+		<result column="i_follow_count" property="iFollowCount"/>	
+		<result column="follow_me_count" property="followMeCount"/>	
+		<result column="share_count" property="shareCount"/>	
+		<result column="user_role_status" property="userRoleStatus"/>	
+		<result column="user_status" property="userStatus"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		user_id, 
+		sign,
+		status,
+		create_time,
+		update_time,
+		i_follow_count,
+		follow_me_count,
+		share_count,
+		user_role_status
+	</sql>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		*
+		from zed_player_user_hot
+		where user_id = #{userId}
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		select 
+			a.user_id, 
+			a.sign,
+			ifnull(b.status,1) status,
+			a.create_time,
+			a.update_time,
+			a.i_follow_count,
+			a.follow_me_count,
+			a.share_count,
+			a.user_role_status,
+			a.status user_status 
+		from zed_player_user a left join zed_player_user_hot b on a.user_id = b.user_id 
+		<where>
+			a.user_role_status>0 and a.user_role_status!=9 and a.share_count>0
+			<if test="userId != null">
+				 and a.user_id = #{userId}
+			</if>
+			<if test="userRoleStatus != null">
+				 and a.user_role_status = #{userRoleStatus}
+			</if>
+			<if test="status != null">
+				 and a.status = #{status}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_user 
+		<where>
+			 user_role_status>0 and user_role_status!=9 and share_count>0
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+			<if test="userRoleStatus != null">
+				 and user_role_status = #{userRoleStatus}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+		</where>
+	</select>
+	
+	
+	<insert id="add" parameterType="com.zed.domain.player.playeruser.HotPlayerUser">
+		insert into zed_player_user_hot
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="userId != null" >
+				user_id,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="createUser != null" >
+				create_user,
+			</if>
+			<if test="status != null" >
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="userId != null" >
+				#{userId},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="createUser != null" >
+				#{createUser},
+			</if>
+			<if test="status != null" >
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.playeruser.HotPlayerUser">
+		update zed_player_user_hot
+		<set>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="createUser != null" >
+				create_user = #{createUser},
+			</if>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+		</set>
+		where user_id=#{userId}
+	</update>
+</mapper>

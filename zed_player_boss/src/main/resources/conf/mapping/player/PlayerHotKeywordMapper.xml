@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerHotKeyword">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.hotkeyword.PlayerHotKeyword">
+		<id column="keyword_id" property="keywordId"/> 
+		<result column="keyword_id" property="keywordId"/>
+		<result column="status" property="status"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="creater" property="creater"/>
+		<result column="updater" property="updater"/>
+		<result column="sort" property="sort"/>
+		<result column="keyword" property="keyword"/>
+		<result column="description" property="description"/>
+		<result column="area_code" property="areaCode"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		keyword_id, 
+		status,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		sort,
+		keyword,
+		area_code,
+		description
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.hotkeyword.PlayerHotKeyword">
+		insert into zed_player_hot_keyword (keyword_id,status,create_time,update_time,creater,updater,sort,keyword,description,area_code) 
+		values (#{keywordId}, #{status},#{createTime}, #{updateTime}, #{creater}, #{updater}, #{sort}, #{keyword}, #{description},#{areaCode})
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.hotkeyword.PlayerHotKeyword">
+		update zed_player_hot_keyword
+		 set 
+		 <if test="status != null">
+			status = #{status} ,
+		 </if>
+		 <if test="creater != null and creater != ''">
+			creater = #{creater} ,
+		 </if>
+		 <if test="updater != null and updater != ''">
+			updater = #{updater},
+		 </if>
+		 <if test="sort != null">
+			sort = #{sort},
+		 </if>
+		 <if test="keyword != null and keyword != ''">
+			keyword = #{keyword},
+		 </if>
+		 <if test="areaCode != null and areaCode != ''">
+			area_code = #{areaCode},
+		 </if>
+		 <if test="description != null and description != ''">
+			description = #{description},
+		 </if>
+			update_time = #{updateTime},
+			updater = #{updater}
+		 where keyword_id = #{keywordId}
+	</update>
+	
+	<update id="updateStatus" parameterType="com.zed.domain.player.hotkeyword.PlayerHotKeyword">
+		update zed_player_hot_keyword
+		 set 
+			status = #{status},
+			update_time = #{updateTime}
+		 where keyword_id = #{keywordId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_hot_keyword where keyword_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="getSequence" resultType="String">
+		select
+		func_getseq('zed_player_hot_keyword') as newSequence
+	</select>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		keyword_id, 
+		status,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		sort,
+		keyword,
+		area_code,
+		description
+		from zed_player_hot_keyword 
+		where keyword_id = #{keywordId}
+	</select>
+	
+	<select id="findAllByStatus" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_hot_keyword 
+		where status = #{status} and area_code = #{areaCode} order by sort asc
+	</select>
+	
+	<select id="findTopKeyWordsWithArea" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_hot_keyword 
+		where status = 1 and area_code = #{areaCode} order by sort asc limit 0,#{size}
+	</select>
+	
+	<select id="findAllAreaCode" resultMap="Base_Result_Model">
+		select area_code from zed_player_hot_keyword group by area_code
+	</select>
+	
+	<select id="findAllByIds" resultMap="Base_Result_Model" parameterType="String">
+		select
+		<include refid="selectId"/>
+		from zed_player_hot_keyword 
+		where keyword_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+				update zed_player_hot_keyword
+		 		set 
+					sort = #{item.sort},
+					status = #{item.status}
+				 where keyword_id = #{item.keywordId}
+    	</foreach>
+	</update>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		keyword_id, 
+		status,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		sort,
+		keyword,
+		area_code,
+		description
+		from zed_player_hot_keyword
+		<where>
+			1=1
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				 and keyword like '%${keyword}%'
+			</if>
+			<if test="areaCode != null and areaCode != ''">
+				 and area_code = #{areaCode}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_hot_keyword
+		<where>
+			1=1
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				 and keyword like '%${keyword}%'
+			</if>
+			<if test="areaCode != null and areaCode != ''">
+				 and area_code = #{areaCode}
+			</if>
+		</where>
+	</select>
+	
+	<select id="deleteAll">
+    <![CDATA[
+        TRUNCATE zed_player_hot_keyword
+    ]]>   
+	</select>
+	
+<!-- 	<select id="deleteAll">
+    	delete from zed_player_hot_keyword
+	</select> -->
+		
+	<select id="addBatch" parameterType="java.util.List">  
+	    insert into zed_player_hot_keyword(
+			keyword_id,
+			status,
+			create_time,
+			update_time,
+			creater,
+			updater,
+			sort,
+			keyword,
+			description,
+			area_code
+		) values
+	    <foreach collection="list" item="item" index="index" separator=",">  
+	      (
+	      #{item.keywordId}, 
+	      #{item.status},
+	      #{item.createTime}, 
+	      #{item.updateTime}, 
+	      #{item.creater}, 
+	      #{item.updater}, 
+	      #{item.sort}, 
+	      #{item.keyword}, 
+	      #{item.description},
+	      #{item.areaCode}
+	      )
+	    </foreach>  
+    </select>
+</mapper>

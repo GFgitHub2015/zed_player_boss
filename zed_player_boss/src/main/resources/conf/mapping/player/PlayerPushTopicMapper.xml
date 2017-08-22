@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerPushTopic">
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.push.PlayerPushTopic">
+		<id column="topic_id" property="topicId"/> 
+		<result column="country_code" property="countryCode" />
+		<result column="topic_type" property="topicType" />
+		<result column="type_value" property="typeValue" />
+		<result column="topic_name" property="topicName" />
+		<result column="status" property="status" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		topic_id,country_code,topic_type,type_value,topic_name,status
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.push.PlayerPushTopic" >
+		insert into zed_player_push_topic
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="topicId != null" >
+				topic_id,
+			</if>
+			<if test="countryCode != null" >
+				country_code,
+			</if>
+			<if test="topicType != null" >
+				topic_type,
+			</if>
+			<if test="typeValue != null" >
+				type_value,
+			</if>
+			<if test="topicName != null" >
+				topic_name,
+			</if>
+			<if test="status != null" >
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="topicId != null" >
+				#{topicId},
+			</if>
+			<if test="countryCode != null" >
+				#{countryCode},
+			</if>
+			<if test="topicType != null" >
+				#{topicType},
+			</if>
+			<if test="typeValue != null" >
+				#{typeValue},
+			</if>
+			<if test="topicName != null" >
+				#{topicName},
+			</if>
+			<if test="status != null" >
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.push.PlayerPushTopic">
+		update zed_player_push_topic
+		<set>
+			<if test="countryCode != null" >
+				country_code = #{countryCode},
+			</if>
+			<if test="topicType != null" >
+				topic_type = #{topicType},
+			</if>
+			<if test="typeValue != null" >
+				type_value = #{typeValue},
+			</if>
+			<if test="topicName != null" >
+				topic_name = #{topicName},
+			</if>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+		</set>
+		where topic_id=#{topicId}
+	</update>
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		select 
+			<include refid="selectId"/>
+		from zed_player_push_topic
+		<where>
+			1=1
+			<if test="topicType != null">
+				 and topic_type = #{topicType}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="countryCode != null" >
+				and country_code = #{countryCode}
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_push_topic
+		<where>
+			1=1
+			<if test="topicType != null">
+				 and topic_type = #{topicType}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="countryCode != null" >
+				and country_code = #{countryCode}
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteById" parameterType="String">
+		update zed_player_push_topic set status = -1 where topic_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_push_topic where topic_id=#{topicId}
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_push_topic where topic_id=#{topicId}
+		<if test="status != null">
+			 and status = #{status}
+		</if>
+	</select>
+	
+	<!-- 查询有效的主题列表，查询时必须有国家码参数 否则返回空值 -->
+	<select id="findListByTopicTypeWithTypeValue" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_push_topic
+		<where>
+			<choose>
+				<when test="countryCode !=null and countryCode != ''">
+					COUNTRY_CODE = #{countryCode}
+					<if test=" appVersion  != null">
+						and (TOPIC_TYPE =1 AND TYPE_VALUE in 
+						<foreach item="idItem" collection="appVersion" open="(" separator="," close=")">
+							#{idItem}
+						</foreach>
+						)
+					</if>
+					<if test=" channel  != null">
+						and ( TOPIC_TYPE =2 AND TYPE_VALUE in
+						<foreach item="idItem" collection="channel" open="(" separator="," close=")">
+							#{idItem}
+						</foreach>
+
+						)
+					</if>
+					<if test=" sysLanguage != null">
+						and ( TOPIC_TYPE =3 AND TYPE_VALUE in
+						<foreach item="idItem" collection="sysLanguage" open="(" separator="," close=")">
+							#{idItem}
+						</foreach>
+						)
+					</if>
+				</when>
+				<otherwise>
+					1!=1
+				</otherwise>
+			</choose>
+			AND status =1
+		</where> 
+	</select>
+	
+</mapper>

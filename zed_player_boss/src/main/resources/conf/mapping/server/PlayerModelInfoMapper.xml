@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerModelInfo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.server.modelinfo.PlayerModelInfo">
+		<result column="model" property="model"/>
+		<result column="dimension" property="dimension"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		model,
+		dimension
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.server.modelinfo.PlayerModelInfo">
+		insert into zed_player_model_info (
+			model,
+			dimension
+		) 
+		values (
+			#{model},
+			#{dimension}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.server.modelinfo.PlayerModelInfo">
+		update zed_player_model_info
+		 set 
+			dimension = #{dimension}
+		 where model = #{model}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_model_info where model in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_model_info
+		where model = #{model}
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_model_info
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_model_info
+		<where>
+			1=1
+			<if test="model != null and model != ''">
+				 and model like '%${model}%'
+			</if>
+			<if test="dimension != null and dimension != ''">
+				 and dimension = #{dimension}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_model_info
+		<where>
+			1=1
+			<if test="model != null and model != ''">
+				 and model like '%${model}%'
+			</if>
+			<if test="dimension != null and dimension != ''">
+				 and dimension = #{dimension}
+			</if>
+		</where>
+	</select>
+		
+</mapper>

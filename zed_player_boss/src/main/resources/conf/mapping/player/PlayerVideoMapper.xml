@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerVideo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.video.PlayerVideo">
+		<id column="res_id" property="resId"/>
+		<result column="keyword" property="keyword"/>
+		<result column="type" property="type"/>
+		<result column="star" property="star"/>
+		<result column="director" property="director"/>
+		<result column="name" property="name"/>
+		<result column="score" property="score"/>
+		<result column="year" property="year"/>
+		<result column="status" property="status"/>
+		<result column="create_time" property="createTime"/>
+		<result column="img_url" property="imgUrl"/>
+		<result column="duration" property="duration"/>
+		<result column="origin" property="origin"/>
+		<result column="his_id" property="hisId"/>
+		<result column="description" property="description"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		res_id,
+		keyword,
+		type,
+		star,
+		director,
+		name,
+		score,
+		year,
+		status,
+		create_time,
+		img_url,
+		duration,
+		origin,
+		his_id,
+		description
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.video.PlayerVideo">
+		insert into zed_player_video 
+		(
+			res_id,
+			keyword,
+			type,
+			star,
+			director,
+			name,
+			score,
+			year,
+			status,
+			create_time,
+			img_url,
+			duration,
+			origin,
+			his_id,
+			description
+		) 
+		values 
+		(
+			#{resId},
+			#{keyword},
+			#{type},
+			#{star},
+			#{director},
+			#{name},
+			#{score},
+			#{year},
+			#{status},
+			#{createTime},
+			#{imgUrl},
+			#{duration},
+			#{origin},
+			#{hisId},
+			#{description}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.video.PlayerVideo">
+		update zed_player_video
+		<set>
+			<if test="keyword != null and keyword != ''">
+				keyword = #{keyword},
+			</if>
+			<if test="type != null and type != ''">
+				type = #{type},
+			</if>
+			<if test="star != null and star != ''">
+				star = #{star},
+			</if>
+			<if test="director != null and director != ''">
+				director = #{director},
+			</if>
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="score != null and score != ''">
+				score = #{score},
+			</if>
+			<if test="imgUrl != null and imgUrl != ''">
+				img_url = #{imgUrl},
+			</if>
+			<if test="year != null and year !=''">
+				year = #{year},
+			</if>
+			<if test="status != null">
+				status= #{status},
+			</if>
+			<if test="duration != null">
+				duration= #{duration},
+			</if>
+			<if test="origin != null">
+				origin= #{origin},
+			</if>
+			<if test="hisId != null">
+				his_id= #{hisId},
+			</if>
+			<if test="description != null">
+				description= #{description},
+			</if>
+		</set>
+		 where res_id = #{resId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_video where res_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+			<include refid="selectId"/>
+		from zed_player_video
+		where res_id = #{resId}
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_video
+		<where>
+			1=1
+			<if test="year != null and year != ''">
+				 and year = #{year}
+			</if>
+			<if test="type != null and type != ''">
+				 and type = #{type}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="origin != null">
+				 and origin = #{origin}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				 and keyword like '%${keyword}%'
+			</if>
+			<if test="name != null and name != ''">
+				 and name like '%${name}%'
+			</if>
+			<if test="director != null and director != ''">
+				 and director like '%${director}%'
+			</if>
+			<if test="star != null and star != ''">
+				 and star like '%${star}%'
+			</if>
+			<if test="score != null and score != ''">
+				 and score = #{score}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_video
+		<where>
+			1=1
+			<if test="year != null and year != ''">
+				 and year = #{year}
+			</if>
+			<if test="type != null and type != ''">
+				 and type = #{type}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="origin != null">
+				 and origin = #{origin}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				 and keyword like '%${keyword}%'
+			</if>
+			<if test="name != null and name != ''">
+				 and name like '%${name}%'
+			</if>
+			<if test="director != null and director != ''">
+				 and director like '%${director}%'
+			</if>
+			<if test="star != null and star != ''">
+				 and star like '%${star}%'
+			</if>
+			<if test="score != null and score != ''">
+				 and score = #{score}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findYears" resultType="String">
+		select
+		year
+		from zed_player_video
+		group by year order by year desc
+	</select>
+	
+	<select id="findTypes" resultType="String">
+		select
+		type
+		from zed_player_video
+		group by type
+	</select>
+	
+	<select id="findPlayerVideoListByHisIds" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId"/>
+		from zed_player_video where his_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+		
+		
+</mapper>

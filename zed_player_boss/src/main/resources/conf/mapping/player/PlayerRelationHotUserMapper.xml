@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerRelationHotUser">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.playerhotuser.PlayerRelationHotUser">
+		<id column="uid" property="uid"/> 
+		<result column="user_id" property="userId"/> 
+		<result column="status" property="status"/>	
+		<result column="sort" property="sort"/>	
+		<result column="origin" property="origin"/>	
+		<result column="title" property="title"/>	
+		<result column="icon_url" property="iconUrl"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		uid, user_id, status, sort, origin, title, icon_url
+	</sql>
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		select  <include refid="selectId" />
+		from zed_player_relation_youtube_hot_user 
+		<where>
+		 	1=1
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="origin != null">
+				 and origin = #{origin}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset}, #{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_relation_youtube_hot_user  
+		<where>
+			1=1
+			<if test="userId != null">
+				 and user_id = #{userId}
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="origin != null">
+				 and origin = #{origin}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findByUserId" resultMap="Base_Result_Model">
+		select <include refid="selectId" />
+		from zed_player_relation_youtube_hot_user  
+		where user_id = #{userId}
+	</select>	
+		
+	<select id="getLastSort" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId" />
+		from zed_player_relation_youtube_hot_user
+		where status = #{status} order by sort desc limit 0, 1
+	</select>
+	
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+			update zed_player_relation_youtube_hot_user set status = #{item.status} where user_id = #{item.userId}
+    	</foreach>
+	</update>
+	
+	<insert id="add">
+		insert into zed_player_relation_youtube_hot_user 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				uid,
+			</if>
+			<if test="userId != null" >
+				user_id,
+			</if>
+			<if test="status != null" >
+				status,
+			</if>
+			<if test="sort != null" >
+				sort,
+			</if>
+			<if test="origin != null" >
+				origin,
+			</if>
+			<if test="title != null" >
+				title,
+			</if>
+			<if test="iconUrl != null" >
+				icon_url,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				#{uid},
+			</if>
+			<if test="userId != null" >
+				#{userId},
+			</if>
+			<if test="status != null" >
+				#{status},
+			</if>
+			<if test="sort != null" >
+				#{sort},
+			</if>
+			<if test="origin != null" >
+				#{origin},
+			</if>
+			<if test="title != null" >
+				#{title},
+			</if>
+			<if test="iconUrl != null" >
+				#{iconUrl},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="findBySort" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId" />
+		from zed_player_relation_youtube_hot_user where sort >= #{sort}
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		<if test="origin != null">
+			and origin = #{origin}
+		</if>
+		order by sort asc
+	</select>
+	
+	<update id="updateSortByUserId" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+			update zed_player_relation_youtube_hot_user set sort = #{item.sort} where user_id = #{item.userId}
+    	</foreach>
+	</update>
+	
+	<delete id="deleteById">
+		delete from zed_player_relation_youtube_hot_user where uid = #{uId}
+	</delete>
+	
+</mapper>

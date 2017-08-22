@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="iosplayervideo" namespace="/iosplayer/video" extends="common">
+	  
+        <action name="*" class="iosPlayerVideoAction" method="{1}">
+        	<interceptor-ref name="tokenStack"/>
+	    	<result name="success" >/WEB-INF/views/contents/iosplayer/video/{1}.jsp</result>
+			<interceptor-ref name="defaultStack" />
+		</action>
+		
+	</package>
+	
+	<package name="iosplayerpromotioninfo" namespace="/iosplayer/promotioninfo" extends="common">
+        <action name="*" class="iosPlayerPromotionInfoAction" method="{1}">
+        	<interceptor-ref name="tokenStack"/>
+	    	<result name="success" >/WEB-INF/views/contents/iosplayer/promotioninfo/{1}.jsp</result>
+			<interceptor-ref name="defaultStack" />
+		</action>
+	</package>
+	
+	<package name="iosplayerSliderShow" namespace="/iosplayer/slidershow" extends="common">
+        <action name="*" class="iosPlayerSliderShowAction" method="{1}">
+        	<interceptor-ref name="tokenStack"/>
+	    	<result name="success" >/WEB-INF/views/contents/iosplayer/slidershow/{1}.jsp</result>
+			<interceptor-ref name="defaultStack" />
+		</action>
+	</package>
+	
+	<package name="iosVideoclass" namespace="/iosplayer/videoclass" extends="common">
+        <action name="list" class="iosPlayerVideoClassesAction" method="list">
+	    	<result name="success" >/WEB-INF/views/contents/iosplayer/videoclass/list.jsp</result>
+		</action>
+        <action name="listYouTuBe" class="iosPlayerVideoClassesAction" method="listYouTuBe">
+	    	<result name="success" >/WEB-INF/views/contents/iosplayer/videoclass/listYouTuBe.jsp</result>
+		</action>
+		<action name="add" class="iosPlayerVideoClassesAction" method="add"/>
+		<action name="update" class="iosPlayerVideoClassesAction" method="update"/>
+		<action name="delete" class="iosPlayerVideoClassesAction" method="delete"/>
+		<action name="isExist" class="iosPlayerVideoClassesAction" method="isExist"/>
+		<action name="initData" class="iosPlayerVideoClassesAction" method="initData"/>
+	</package>
+	
+	<package name="iosPlayerRelationHotUser" namespace="/iosplayer/playerRelationHotUser" extends="common">
+        <action name="*" class="iosPlayerRelationHotUserAction" method="{1}">
+            <result name="success" >/WEB-INF/views/contents/iosplayer/playerhotuser/{1}.jsp</result>
+        </action>
+    </package>
+</struts>

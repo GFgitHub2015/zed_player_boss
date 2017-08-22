@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerSpaceActiveUser">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.spaceactiveuser.PlayerSpaceActiveUser">
+		<id column="uid" property="uid"/> 
+		<result column="stat_date" property="statDate" />
+		<result column="active_count" property="activeCount" />
+		<result column="adg_active_count" property="adgActiveCount" />
+		<result column="channel" property="channel" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+		<result column="seven_stat" property="sevenStat" />
+		<result column="thirty_stat" property="thirtyStat" />
+		<result column="appname" property="appname" />
+		<result column="data_count" property="dataCount" />
+		<result column="all_date" property="allDate" />
+		<result column="scale" property="scale" />
+		<result column="active_count_scale" property="activeCountScale" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<insert id="add" parameterType="com.zed.domain.player.spaceactiveuser.PlayerSpaceActiveUser">
+		insert into zed_player_space_active_user_stat
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				uid,
+			</if>
+			<if test="statDate != null" >
+				stat_date,
+			</if>
+			<if test="activeCount != null" >
+				active_count,
+			</if>
+			<if test="adgActiveCount != null" >
+				adg_active_count,
+			</if>
+			<if test="channel != null" >
+				channel,
+			</if>
+			<if test="updateUser != null" >
+				update_user,
+			</if>
+			<if test="updateTime != null" >
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				#{uid},
+			</if>
+			<if test="statDate != null" >
+				#{statDate},
+			</if>
+			<if test="activeCount != null" >
+				#{activeCount},
+			</if>
+			<if test="adgActiveCount != null" >
+				#{adgActiveCount},
+			</if>
+			<if test="channel != null" >
+				#{channel},
+			</if>
+			<if test="updateUser != null" >
+				#{updateUser},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.spaceactiveuser.PlayerSpaceActiveUser">
+		update zed_player_space_active_user_stat
+		<set>
+			<if test="uid != null" >
+				uid = #{uid},
+			</if>
+			<if test="statDate != null" >
+				stat_date = #{statDate},
+			</if>
+			<if test="activeCount != null" >
+				active_count = #{activeCount},
+			</if>
+			<if test="adgActiveCount != null" >
+				adg_active_count = #{adgActiveCount},
+			</if>
+			<if test="channel != null" >
+				channel = #{channel},
+			</if>
+			<if test="updateUser != null" >
+				update_user = #{updateUser},
+			</if>
+			<if test="updateTime != null" >
+				update_time = #{updateTime},
+			</if>
+		</set>
+		where uid=#{uid}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_space_active_user_stat where uid=#{uid}
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select * from zed_player_space_active_user_stat where uid=#{uid}
+	</select>
+
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		SELECT a.*,b.param_value appname FROM zed_player_space_active_user_stat a left join  zed_player_param b on a.channel = b.country_code 
+		<where>
+			<if test="channel != null and channel != ''" >
+				and a.channel = #{channel} 
+			</if>
+			<if test="startDate != null and startDate != ''" >
+				and a.stat_date &gt;= #{startDate} 
+			</if>
+			<if test="endDate != null and endDate != ''" >
+				and a.stat_date &lt;= #{endDate} 
+			</if>
+			<if test="statDate != null and statDate != ''" >
+				and a.stat_date = #{statDate} 
+			</if>
+			and b.param_name='appname' 
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_space_active_user_stat a 
+		<where>
+			<if test="channel != null and channel != ''" >
+				and a.channel = #{channel} 
+			</if>
+			<if test="startDate != null and startDate != ''" >
+				and a.stat_date &gt;= #{startDate} 
+			</if>
+			<if test="endDate != null and endDate != ''" >
+				and a.stat_date &lt;= #{endDate} 
+			</if>
+			<if test="statDate != null and statDate != ''" >
+				and a.stat_date = #{statDate} 
+			</if>
+		</where>
+	</select>
+	
+	<select id="findMasterStatList" resultMap="Base_Result_Model">
+		select a.country_code channel ,a.param_value appname ,
+		ifnull(d.seven_stat,0) seven_stat, ifnull(f.thirty_stat,0) thirty_stat, ifnull(g.active_count,0) active_count , ifnull(g.adg_active_count,0) adg_active_count, 
+		ifnull(f.data_count,0) data_count ,f.all_date ,IFNULL(h.param_value, 1) active_count_scale 
+		from zed_player_param a
+		left join (
+		select c.channel,avg(c.active_count) seven_stat  from zed_player_space_active_user_stat c where c.stat_date &gt;= date_format(DATE_SUB(CURDATE(), INTERVAL 7 DAY) ,'%Y-%m-%d') GROUP BY c.channel
+		) d on d.channel=a.country_code 
+		LEFT JOIN (
+		SELECT e.channel,AVG(e.active_count) thirty_stat,sum(1) data_count,GROUP_CONCAT(e.stat_date) all_date  FROM zed_player_space_active_user_stat e WHERE e.stat_date &gt;= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 30 DAY) ,'%Y-%m-%d') GROUP BY e.channel
+		) f ON f.channel=a.country_code 
+		LEFT JOIN (
+			SELECT e.channel,e.active_count,e.adg_active_count FROM zed_player_space_active_user_stat e WHERE e.stat_date = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 DAY) ,'%Y-%m-%d')
+		) g ON g.channel=a.country_code 
+		LEFT JOIN zed_player_param h ON h.country_code = a.country_code AND h.param_name = 'activeCountScale'
+		where a.param_name='appname' and a.country_code like 'WEBMASTER_%'  
+		<if test="appname != null and appname != ''" >
+			and a.param_value like  concat('%',#{appname},'%')
+		</if>
+		order by a.param_type 
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findMasterStatCount" resultType="Integer">
+		select count(1) 
+		from zed_player_param a 
+		where a.param_name='appname' and a.country_code like 'WEBMASTER_%'  
+		<if test="appname != null and appname != ''" >
+			and a.param_value like  concat('%',#{appname},'%')
+		</if>
+	</select>
+	
+	<select id="getMinStatDate" resultType="String">
+		SELECT MIN(stat_date) FROM zed_player_space_active_user_stat a 
+		<where>
+			<if test="channel != null and channel != ''" >
+				and a.channel = #{channel} 
+			</if>
+		</where>
+		GROUP BY a.channel;
+	</select>
+	
+
+	<update id="updateAdDataActiveCount"  >
+		UPDATE zed_player_space_active_user_stat_scales a  
+		SET a.active_count = #{activeCount},a.active_count_scale=#{scale}
+		WHERE a.channel=#{channel}   and a.synch_date=#{statDate}  
+	</update>
+	
+</mapper>

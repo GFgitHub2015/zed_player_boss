@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerCountry">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.country.PlayerCountry">
+		<id column="country_id" property="countryId"/> 
+		<result column="zone_time_id" property="zoneTimeId"/>
+		<result column="country_name_zh" property="countryNameZh"/>	
+		<result column="country_name_en" property="countryNameEn"/>	
+		<result column="status" property="status"/>	
+		<result column="country_code" property="countryCode"/> 
+		<result column="alpha2" property="alpha2"/> 
+		<result column="alpha3" property="alpha3"/> 
+		<result column="numeric3" property="numeric3"/> 
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		country_id, 
+		country_name_zh,
+		country_name_en,
+		status,
+		country_code,
+		zone_time_id,
+		alpha2,
+		alpha3,
+		numeric3
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.country.PlayerCountry">
+		insert into zed_player_country (
+			country_id, 
+			country_name_zh,
+			country_name_en,
+			status,
+			country_code,
+			zone_time_id,
+			alpha2,
+			alpha3,
+			numeric3
+		) 
+		values (
+			#{countryId}, 
+			#{countryNameZh}, 
+			#{countryNameEn}, 
+			#{status},
+			#{countryCode},
+			#{zoneTimeId},
+			#{alpha2},
+			#{alpha3},
+			#{numeric3}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.country.PlayerCountry">
+		update zed_player_country
+		 <set>
+			 <if test="countryNameZh != null and countryNameZh != ''">
+				country_name_zh = #{countryNameZh} ,
+			 </if>
+			 <if test="countryNameEn != null and countryNameEn != ''">
+				country_name_en = #{countryNameEn} ,
+			 </if>
+			 <if test="status != null">
+				status = #{status},
+			 </if>
+			 <if test="zoneTimeId != null">
+				zone_time_id = #{zoneTimeId},
+			 </if>
+			 <if test="alpha2 != null">
+				alpha2 = #{alpha2},
+			 </if>
+			 <if test="alpha3 != null">
+				alpha3 = #{alpha3},
+			 </if>
+			 <if test="numeric3 != null">
+				numeric3 = #{numeric3},
+			 </if>
+		 </set>
+		 where country_id = #{countryId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_country where country_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_country
+		where country_id = #{countryId}
+	</select>
+	
+	<select id="findByCountryCode" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_country
+		where country_code = #{countryCode}
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_country where status = 1
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_country
+		<where>
+			1=1
+			<if test="countryName != null and countryName != ''">
+				and (locate(#{countryName},lower(country_name_en)) or locate(#{countryName},lower(country_name_zh)))
+			</if>
+			<if test="countryCode != null and countryCode != ''">
+				and country_code = #{countryCode}
+			</if>
+			<if test="status != null and status != ''">
+				 and status = #{status}
+			</if>
+			<if test="alpha2 != null and alpha2 != ''">
+				 and alpha2 = #{alpha2}
+			</if>
+			<if test="alpha3 != null and alpha3 != ''">
+				 and alpha3 = #{alpha3}
+			</if>
+			<if test="numeric3 != null and numeric3 != ''">
+				 and numeric3 = #{numeric3}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_country
+		<where>
+			1=1
+			<if test="countryName != null and countryName != ''">
+				and (locate(#{countryName},lower(country_name_en)) or locate(#{countryName},lower(country_name_zh)))
+			</if>
+			<if test="countryCode != null and countryCode != ''">
+				and country_code = #{countryCode}
+			</if>
+			<if test="status != null and status != ''">
+				 and status = #{status}
+			</if>
+			<if test="alpha2 != null and alpha2 != ''">
+				 and alpha2 = #{alpha2}
+			</if>
+			<if test="alpha3 != null and alpha3 != ''">
+				 and alpha3 = #{alpha3}
+			</if>
+			<if test="numeric3 != null and numeric3 != ''">
+				 and numeric3 = #{numeric3}
+			</if>
+		</where>
+	</select>
+		
+</mapper>

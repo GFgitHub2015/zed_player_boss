@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd
+			">
+	<!-- 采用注释的方式配置bean -->
+	<context:property-placeholder location="classpath:conf/oss.properties"/>
+	
+	<bean id="clientConfiguration" class="com.aliyun.oss.ClientConfiguration">
+		<property name="maxConnections" value="${oss.maxConnections}"/>
+		<property name="socketTimeout" value="${oss.socketTimeout}"/>
+		<property name="connectionTimeout" value="${oss.connectionTimeout}"/>
+		<property name="connectionRequestTimeout" value="${oss.connectionRequestTimeout}"/>
+		<property name="idleConnectionTime" value="${oss.idleConnectionTime}"/>
+		<property name="maxErrorRetry" value="${oss.maxErrorRetry}"/>
+<!-- 		<property name="supportCname" value="${oss.supportCname}"/>
+		<property name="sldEnabled" value="${oss.sldEnabled}"/>
+		<property name="protocol" value="${oss.protocol}"/>
+		<property name="userAgent" value="${oss.userAgent}"/>
+		<property name="proxyHost" value="${oss.proxyHost}"/>
+		<property name="proxyPort" value="${oss.proxyPort}"/>
+		<property name="proxyUsername" value="${oss.proxyUsername}"/>
+		<property name="proxyPassword" value="${oss.proxyPassword}"/> -->
+	</bean>
+	
+	<bean id="ossClient" class="com.aliyun.oss.OSSClient">
+		<constructor-arg name="endpoint" value="${oss.endpoint}"/>
+		<constructor-arg name="accessKeyId" value="${oss.accessKeyId}"/>
+		<constructor-arg name="secretAccessKey" value="${oss.secretKey}"/>
+		<constructor-arg name="config" ref="clientConfiguration"/>
+	</bean>
+	
+</beans>

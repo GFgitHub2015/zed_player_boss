@@ -1,0 +1,61 @@
+﻿/*error 404*/
+.404Error{background:url(../images/404.png) no-repeat; width:490px; margin-top:75px;padding-top:65px;}
+.404Error h2{font-size:22px; padding-left:154px;}
+.404Error p{padding-left:154px; line-height:35px;color:#717678;}
+
+/*system error*/
+.sysError{background:url(../images/error.png) no-repeat; width:490px; margin-top:75px;padding-top:65px;}
+.sysError h2{font-size:22px; padding-left:154px;}
+.sysError p{padding-left:154px; line-height:35px;color:#717678;}
+
+/*system result*/
+.sysResult{background:url(../images/result.png) no-repeat; width:490px; margin-top:75px;padding-top:65px;}
+.sysResult h2{font-size:22px; padding-left:154px;}
+.sysResult p{padding-left:154px; line-height:35px;color:#717678;}
+
+/*ok*/
+.sysOK{background:url(../images/OK.png) no-repeat; width:490px; margin-top:75px;padding-top:65px;}
+.sysOK h2{font-size:22px; padding-left:154px;}
+.sysOK p{padding-left:154px; line-height:35px;color:#717678;}
+
+.height32{height:32px}
+
+
+#errMessage td{
+	padding:0px 7px 0px 7px;
+}
+div#errMessage{
+	margin:0px -5px 0 -5px;
+	/*IE hacking*/
+	*margin:5px -8px 0 -10px;
+}
+
+div#errMessage .content{
+	padding:0 0 0 5px;
+	margin:0px;
+	color:#CB0303;
+	background:#fafafa;
+	line-height:20px;
+	text-align:left;
+	font-size:12px;
+	vertical-align:middle;
+}
+div#errMessage .content p img{
+	margin:3px 5px 0 0;
+}
+
+.ttab td{
+border:solid 1px #b5d6e6;
+}
+
+
+.selectBorder{
+	margin-top: 2px; 
+	font-size:9pt; 
+	height:32px; 
+	line-height: 32px; 
+	border-top:solid 1px #a7b5bc; 
+	border-left:solid 1px #a7b5bc; 
+	border-right:solid 1px #ced9df;
+	 border-bottom:solid 1px #ced9df;
+}

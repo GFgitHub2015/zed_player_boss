@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+   	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+   	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	 <bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:conf/redis.properties</value>
+			</list>
+		</property>
+	</bean> 
+
+	<!-- 对象池配置： -->
+	<bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"  lazy-init="true">
+		<property name="maxTotal" value="${redis.pool.maxTotal}" />
+		<property name="maxIdle" value="${redis.pool.maxIdle}" />
+		<property name="maxWaitMillis" value="${redis.pool.maxWait}" />
+		<property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+	</bean>
+	
+		<!-- cache   redis  begin -->
+	<bean id="cacheRedisSentinelConfig" class="com.zed.redis.MasRedisSentinelConfiguration"  lazy-init="true">
+		<property name="master">
+			<bean class="org.springframework.data.redis.connection.RedisNode">
+				<property name="name" value="${redis.cache.master}"></property>
+			</bean>
+		</property>
+		<property name="sentinels">
+			<set>
+				<bean class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg index="0" value="${redis.cache.host1}" />
+					<constructor-arg index="1" value="${redis.cache.port1}" />
+				</bean>
+				<bean class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg index="0" value="${redis.cache.host2}" />
+					<constructor-arg index="1" value="${redis.cache.port2}" />
+				</bean>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="cacheRedisConnectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"  lazy-init="true">
+		<constructor-arg index="0" ref="cacheRedisSentinelConfig" />
+		<constructor-arg index="1" ref="redisPoolConfig" />
+		<property name="timeout" value="${redis.cache.timeout}" />
+		<property name="password" value="${redis.pool.password}" />
+	</bean>
+
+	<bean id="cacheRedis" class="org.springframework.data.redis.core.StringRedisTemplate"
+		p:connectionFactory-ref="cacheRedisConnectionFactory"  lazy-init="true">
+	</bean>
+	
+	<!-- cache redis  end -->
+</beans>

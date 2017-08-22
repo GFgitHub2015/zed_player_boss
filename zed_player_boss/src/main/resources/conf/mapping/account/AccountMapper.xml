@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.Account">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.account.account.Account">
+		<id column="user_id" property="userId"/> 
+		<result column="status" property="status" />
+		<result column="country" property="country" />
+		<result column="area_code" property="areaCode" />
+		<result column="phone" property="phone" />
+		<result column="password" property="password" />
+		<result column="icon_url" property="iconUrl" />
+		<result column="nick_name" property="nickName" />
+		<result column="sex" property="sex" />
+		<result column="bir" property="bir" />
+		<result column="origin" property="origin" />
+		<result column="exps" property="exps" />
+		<result column="scores" property="scores" />
+		<result column="amount" property="amount" />
+		<result column="level" property="level" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="user_type" property="userType" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		user_id, status, country, area_code, phone, password, icon_url, nick_name, sex, bir, origin, exps, scores, amount, level, create_time, update_time, user_type
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.account.account.Account">
+		insert into zed_account
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="userId != null" >
+				user_id,
+			</if>
+			<if test="status != null" >
+				status,
+			</if>
+			<if test="country != null" >
+				country,
+			</if>
+			<if test="areaCode != null" >
+				area_code,
+			</if>
+			<if test="phone != null" >
+				phone,
+			</if>
+			<if test="password != null" >
+				password,
+			</if>
+			<if test="iconUrl != null" >
+				icon_url,
+			</if>
+			<if test="nickName != null" >
+				nick_name,
+			</if>
+			<if test="sex != null" >
+				sex,
+			</if>
+			<if test="bir != null" >
+				bir,
+			</if>
+			<if test="level != null" >
+				level,
+			</if>
+			<if test="origin != null" >
+				origin,
+			</if>
+			<if test="exps != null" >
+				exps,
+			</if>
+			<if test="scores != null" >
+				scores,
+			</if>
+			<if test="amount != null" >
+				amount,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="updateTime != null" >
+				update_time,
+			</if>
+			<if test="userType != null" >
+				user_type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="userId != null" >
+				#{userId},
+			</if>
+			<if test="status != null" >
+				#{status},
+			</if>
+			<if test="country != null" >
+				#{country},
+			</if>
+			<if test="areaCode != null" >
+				#{areaCode},
+			</if>
+			<if test="phone != null" >
+				#{phone},
+			</if>
+			<if test="password != null" >
+				#{password},
+			</if>
+			<if test="iconUrl != null" >
+				#{iconUrl},
+			</if>
+			<if test="nickName != null" >
+				#{nickName},
+			</if>
+			<if test="sex != null" >
+				#{sex},
+			</if>
+			<if test="bir != null" >
+				#{bir},
+			</if>
+			<if test="level != null" >
+				#{level},
+			</if>
+			<if test="origin != null" >
+				#{origin},
+			</if>
+			<if test="exps != null" >
+				#{exps},
+			</if>
+			<if test="scores != null" >
+				#{scores},
+			</if>
+			<if test="amount != null" >
+				#{amount},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="userType != null" >
+				#{userType},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.account.account.Account">
+		update zed_account
+		<set>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+			<if test="country != null" >
+				country = #{country},
+			</if>
+			<if test="areaCode != null" >
+				area_code = #{areaCode},
+			</if>
+			<if test="phone != null" >
+				phone = #{phone},
+			</if>
+			<if test="password != null" >
+				password = #{password},
+			</if>
+			<if test="iconUrl != null" >
+				icon_url = #{iconUrl},
+			</if>
+			<if test="nickName != null" >
+				nick_name = #{nickName},
+			</if>
+			<if test="sex != null" >
+				sex = #{sex},
+			</if>
+			<if test="bir != null" >
+				bir = #{bir},
+			</if>
+			<if test="level != null" >
+				level = #{level},
+			</if>
+			<if test="origin != null" >
+				origin = #{origin},
+			</if>
+			<if test="exps != null" >
+				exps = #{exps},
+			</if>
+			<if test="scores != null" >
+				scores = #{scores},
+			</if>
+			<if test="amount != null" >
+				amount = #{amount},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null" >
+				update_time = #{updateTime},
+			</if>
+			<if test="userType != null" >
+				user_type = #{userType},
+			</if>
+		</set>
+		where user_id=#{userId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		update zed_account 
+			set status = -1 , update_time = NOW()
+		where user_id in
+		<foreach collection="array" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_account where user_id=#{userId} and ORIGIN = 2 and status != -1
+	</select>
+	
+	<select id="findByNickName"  resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_account 
+		where ORIGIN = 2 and status != -1 and nick_name=#{nickName}
+	</select>
+	
+	<select id="findByPhone"  resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_account 
+		where ORIGIN = 2 and status != -1 and phone = #{phone}
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_account 
+		<where>
+			ORIGIN = 2 and status != -1
+			<if test="searchkey != null" >
+				and (locate(#{searchkey},lower(NICK_NAME)) or locate(#{searchkey},lower(USER_ID)) or locate(#{searchkey},lower(phone)))
+			</if>
+			<if test="areaCode != null">
+				and area_code = #{areaCode}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="sorting != null">
+				order by ${sorting}
+			</if>
+			<if test="offset != null and limit != null">
+				limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_account 
+		<where>
+			ORIGIN = 2 and status != -1
+			<if test="searchkey != null" >
+				and (locate(#{searchkey},lower(NICK_NAME)) or locate(#{searchkey},lower(USER_ID)) or locate(#{searchkey},lower(phone)))
+			</if>
+			<if test="areaCode != null">
+				and area_code = #{areaCode}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+	</select>
+		
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+			update zed_live_account.zed_account a set a.status = #{item.status} where a.user_id = #{item.userId}
+    	</foreach>
+	</update>
+	
+</mapper>

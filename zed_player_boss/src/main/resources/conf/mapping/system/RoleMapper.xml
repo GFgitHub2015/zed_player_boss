@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.Role"> 
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.system.Role">
+		<id column="role_id" property="roleId"/>
+		<result column="role_id" property="roleId"/>
+		<result column="role_name" property="roleName"/>
+		<result column="role_key" property="roleKey"/>		
+		<result column="description" property="description"/>
+		<result column="enable" property="enable"/>
+		<result column="created_by" property="createdBy"/>	
+		<result column="created_time" jdbcType="DATE" property="createdTime"/>
+		<result column="updated_by" property="updatedBy"/>	
+		<result column="updated_time" jdbcType="DATE" property="updatedTime"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		role_id,
+		role_name,
+		role_key, 
+		description,
+		enable,
+		created_by,
+		created_time,
+		updated_by,
+		updated_time
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.system.Role">
+		insert into zed_role (role_id, role_name, role_key, description, enable,created_by,created_time,updated_by,updated_time) 
+		values ((select func_getseq('zed_role')), #{roleName}, #{roleKey}, #{description}, #{enable}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime})
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.system.Role">
+		update zed_role
+		 set 
+		 <if test="roleName != null and roleName != ''">
+			role_name = #{roleName},
+		 </if>
+		 <if test="roleKey != null and roleKey != ''">
+			role_key = #{roleKey} ,
+		 </if>
+		 <if test="enable != null and enable != ''">
+			enable = #{enable} ,
+		 </if>
+		 <if test="description != null and description != ''">
+			description = #{description} ,
+		 </if>		 
+			updated_by = #{updatedBy},
+			updated_time = #{updatedTime}
+		 where role_id = #{roleId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_role where role_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model" parameterType="String" >
+		select
+		<include refid="selectId" />
+		from zed_role where role_id = #{roleId} 
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_role u
+		where 1=1
+				<if test="roleName != null and roleName != ''">
+						and role_name like '%${roleName}%'
+				</if>
+				<if test="enable != null and enable != ''">
+						and enable = #{enable}
+				</if>
+				<if test="sorting != null">
+				 	 order by ${sorting} 
+				</if>
+				<if test="offset != null and limit != null">
+				 	 limit #{offset},#{limit}
+				</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_role 
+		where 1=1
+				<if test="roleName != null and roleName != ''">
+						and role_name like '%${roleName}%'
+				</if>
+				<if test="enable != null and enable != ''">
+						and enable = #{enable}
+				</if>
+	</select>
+	
+	<select id="findByAdminRole" parameterType="String" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_role where role_id in
+			(SELECT role_id 
+			FROM zed_admin_role
+			WHERE admin_id=#{adminId}
+			)
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_HashMap">
+		select
+		<include refid="selectId" />
+		from zed_role
+		where enable ='1'
+	</select>
+	
+	<insert id="addAdminRole" parameterType="com.zed.domain.system.AdminRole">
+		insert into zed_admin_role
+		(admin_id,role_id,created_by,created_time,updated_by,updated_time) 
+		values 
+		(#{adminId},#{roleId},#{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime})
+	</insert>
+	
+	<delete id="deleteAdminRole" parameterType="String">
+		delete from zed_admin_role 
+		where 
+		admin_id=#{adminId}
+	</delete>
+	
+	<select id="findRoleByRoleKey" resultMap="Base_Result_Model" parameterType="String" >
+		select
+		<include refid="selectId" />
+		from zed_role where role_key = #{roleKey}
+	</select>
+	
+	<select id="findRoleByParams" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_role 
+		<where>
+			<trim prefixOverrides="or">
+				<if test="roleKey != null and roleKey != ''">or role_key = #{roleKey}</if>
+				<if test="roleName != null and roleName != ''">or role_name = #{roleName}</if>
+			</trim>
+		</where>
+	</select>
+</mapper>
