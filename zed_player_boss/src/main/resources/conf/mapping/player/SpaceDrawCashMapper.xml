@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.SpaceDrawCash">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.drawcash.SpaceDrawCash">
+		<id column="id" property="id"/>
+		<result column="channel" property="channel" />
+		<result column="amount" property="amount" />
+		<result column="source_type" property="sourceType" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="create_user" property="createUser" />
+		<result column="update_user" property="updateUser" />
+		<result column="payment_id" property="paymentId" />
+		<result column="card_id" property="cardId" />
+		<result column="memo" property="memo" />
+		<result column="state" property="state" />
+		<result column="payment_id_exists" property="paymentIdExists" />
+		<result column="appname" property="appname" />
+	</resultMap>
+	
+	<insert id="add" parameterType="com.zed.domain.player.drawcash.SpaceDrawCash">
+		insert into zed_player_ad_drawcash
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				id,
+			</if>
+			<if test="channel != null" >
+				channel,
+			</if>
+			<if test="amount != null" >
+				amount,
+			</if>
+			<if test="sourceType != null" >
+				source_type,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="updateTime != null" >
+				update_time,
+			</if>
+			<if test="createUser != null" >
+				create_user,
+			</if>
+			<if test="updateUser != null" >
+				update_user,
+			</if>
+			<if test="paymentId != null" >
+				payment_id,
+			</if>
+			<if test="cardId != null" >
+				card_id,
+			</if>
+			<if test="memo != null" >
+				memo,
+			</if>
+			<if test="state != null" >
+				state,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				#{id},
+			</if>
+			<if test="channel != null" >
+				#{channel},
+			</if>
+			<if test="amount != null" >
+				#{amount},
+			</if>
+			<if test="sourceType != null" >
+				#{sourceType},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="createUser != null" >
+				#{createUser},
+			</if>
+			<if test="updateUser != null" >
+				#{updateUser},
+			</if>
+			<if test="paymentId != null" >
+				#{paymentId},
+			</if>
+			<if test="cardId != null" >
+				#{cardId},
+			</if>
+			<if test="memo != null" >
+				#{memo},
+			</if>
+			<if test="state != null" >
+				#{state},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.drawcash.SpaceDrawCash">
+		update zed_player_ad_drawcash
+		<set>
+			<if test="id != null" >
+				id = #{id},
+			</if>
+			<if test="channel != null" >
+				channel = #{channel},
+			</if>
+			<if test="amount != null" >
+				amount = #{amount},
+			</if>
+			<if test="sourceType != null" >
+				source_type = #{sourceType},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null" >
+				update_time = #{updateTime},
+			</if>
+			<if test="createUser != null" >
+				create_user = #{createUser},
+			</if>
+			<if test="updateUser != null" >
+				update_user = #{updateUser},
+			</if>
+			<if test="paymentId != null" >
+				payment_id = #{paymentId},
+			</if>
+			<if test="cardId != null" >
+				card_id = #{cardId},
+			</if>
+			<if test="memo != null" >
+				memo = #{memo},
+			</if>
+			<if test="state != null" >
+				state = #{state},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		update zed_player_ad_drawcash a set a.state='-1' where id=#{id}
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select * from zed_player_ad_drawcash where id=#{id}
+	</select>
+
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		SELECT a.*,d.param_value  appname , e.uid payment_id_exists
+		FROM zed_player_ad_drawcash a
+		left join zed_player_param d on a.channel = d.country_code and d.param_name = 'appname'
+		left join zed_player_ad_payment e on e.uid= a.payment_id
+		<where>
+			a.state != '-1'
+			<if test="id != null">
+				and a.id = #{id}
+			</if>
+			<if test="channel != null">
+				and a.channel = #{channel}
+			</if>
+			<if test="amount != null">
+				and a.amount = #{amount}
+			</if>
+			<if test="sourceType != null">
+				and a.source_type = #{sourceType}
+			</if>
+			<if test="createTime != null">
+				and a.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and a.update_time = #{updateTime}
+			</if>
+			<if test="createUser != null">
+				and a.create_user = #{createUser}
+			</if>
+			<if test="updateUser != null">
+				and a.update_user = #{updateUser}
+			</if>
+			<if test="paymentId != null">
+				and a.payment_id = #{paymentId}
+			</if>
+			<if test="cardId != null">
+				and card_id = #{cardId}
+			</if>
+			<if test="memo != null">
+				and a.memo = #{memo}
+			</if>
+			<if test="state != null">
+				and a.state = #{state}
+			</if>
+			<if test="startDate != null" >
+				and a.create_time &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.create_time &lt;= #{endDate}
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		SELECT count(*) 
+		FROM zed_player_ad_drawcash a
+			<where>
+				a.state != '-1'
+				<if test="id != null">
+					and a.id = #{id}
+				</if>
+				<if test="channel != null">
+					and a.channel = #{channel}
+				</if>
+				<if test="amount != null">
+					and a.amount = #{amount}
+				</if>
+				<if test="sourceType != null">
+					and a.source_type = #{sourceType}
+				</if>
+				<if test="createTime != null">
+					and a.create_time = #{createTime}
+				</if>
+				<if test="updateTime != null">
+					and a.update_time = #{updateTime}
+				</if>
+				<if test="createUser != null">
+					and a.create_user = #{createUser}
+				</if>
+				<if test="updateUser != null">
+					and a.update_user = #{updateUser}
+				</if>
+				<if test="paymentId != null">
+					and a.payment_id = #{paymentId}
+				</if>
+				<if test="cardId != null">
+					and card_id = #{cardId}
+				</if>
+				<if test="memo != null">
+					and a.memo = #{memo}
+				</if>
+				<if test="state != null">
+					and a.state = #{state}
+				</if>
+				<if test="startDate != null" >
+					and a.create_time &gt;= #{startDate}
+				</if>
+				<if test="endDate != null" >
+					and a.create_time &lt;= #{endDate}
+				</if>
+		</where>
+	</select>
+	
+	<!--  17 广告收入,5 奖励收入 -->
+	<select id="findChannelAmount"  resultMap="Base_Result_Model">
+		SELECT a.channel ,SUM(a.earnings) amount ,b.parent_id sourceType , d.param_value appname
+		FROM  zed_player_ad_payment  a LEFT JOIN zed_player_dict b ON a.source_type = b.dict_value AND b.dict_type='paymentResource' 
+		LEFT JOIN zed_player_param d ON a.channel = d.country_code AND d.param_name = 'appname'
+		WHERE  a.state!='-1' AND  (b.parent_id='17'  OR b.parent_id='5') and d.param_value is not null GROUP BY a.channel ,b.parent_id
+		order by d.param_value
+	</select>
+	
+	<update id="addPayementByDrawCashId">
+		INSERT INTO zed_player_ad_payment
+            (uid,
+             channel,
+             earnings,
+             pay_type,
+             source_type,
+             synch_date,
+             create_time,
+             update_time,
+             state,
+             memo)
+		SELECT a.payment_id,a.channel,a.amount,'1',a.source_type,DATE_FORMAT(NOW(), '%Y-%m-%d'),a.create_time,a.update_time,'1',a.memo
+		FROM zed_player_ad_drawcash a where a.id in
+		 <foreach item="idItem" collection="drawCashIds" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<update id="deletePayment">
+		update zed_player_ad_payment a set a.state ='-1' where a.uid=#{paymentId}
+	</update>
+	
+</mapper>

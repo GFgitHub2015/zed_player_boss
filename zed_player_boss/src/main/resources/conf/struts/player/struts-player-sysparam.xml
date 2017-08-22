@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="sysparam" namespace="/sysparam" extends="common">
+	  
+        <action name="existsSysParam" class="sysParamAction" method="existsSysParam"  ></action>
+		
+        <action name="*" class="sysParamAction" method="{1}">
+        	<interceptor-ref name="tokenStack"/>
+	    	<result name="success" >/WEB-INF/views/contents/player/sysparam/{1}.jsp</result>
+			<interceptor-ref name="defaultStack" />
+		</action>
+		
+	</package>
+
+</struts>

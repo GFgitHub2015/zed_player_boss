@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:elasticsearch="http://www.pilato.fr/schema/elasticsearch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.pilato.fr/schema/elasticsearch http://www.pilato.fr/schema/elasticsearch/elasticsearch-0.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<bean id="jestClientConfigBuilder" class="com.zed.search.springdata.jest.JestClientBuilder">
+		<constructor-arg type="java.lang.String" value="http://${es.esNodes}" />
+		<constructor-arg name="multiThreaded" value="true" />
+	</bean>
+    
+    <bean id="jestClientConfig" factory-bean="jestClientConfigBuilder" factory-method="build"/>
+    
+    <bean id="jestClientFactory" class="com.zed.search.springdata.jest.JestClientFactory">
+        <property name="httpClientConfig" ref="jestClientConfig"/>
+    </bean>
+    
+    <bean id="jestClient" factory-bean="jestClientFactory" factory-method="getObject" destroy-method="shutdownClient" />
+
+    <!-- Elasticsearch Jest Template -->
+    <bean id="elasticsearchTemplate" class="com.zed.search.springdata.jest.JestElasticsearchTemplate">
+        <constructor-arg ref="jestClient"/>
+    </bean>
+    
+    <bean name="playerVideoElasticsearch2Service" class="com.zed.service.player.es.impl.PlayerVideoElasticsearch2ServiceImpl" init-method="init">
+    	<property name="esIndexName" value="${es.index.logical.file.name}"/>
+    	<property name="mappingClass" value="${es.index.mapping.logical.file.class}"/>
+    	<property name="typeName" value="${es.index.logical.file.type}"/>
+    </bean>
+    
+    
+    <bean name="playerUserHotElasticsearchService" class="com.zed.service.player.es.impl.PlayerUserHotElasticsearchServiceImpl" init-method="init">
+    	<property name="esIndexName" value="${es.index.player.hotuser.name}"/>
+    	<property name="mappingClass" value="${es.index.mapping.player.hotuser.class}"/>
+    	<property name="typeName" value="${es.index.player.hotuser.type}"/>
+    </bean>
+
+</beans>

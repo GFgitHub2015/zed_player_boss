@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerConfig">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.server.config.PlayerConfig">
+		<result column="config_id" property="configId"/>
+		<result column="review_status" property="reviewStatus"/>
+		<result column="version" property="version"/>
+		<result column="package_name" property="packageName"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		config_id,
+		review_status,
+		version,
+		package_name
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.server.config.PlayerConfig">
+		insert into zed_player_config (
+			config_id,
+			review_status,
+			version,
+			package_name
+		) 
+		values (
+			#{configId},
+			#{reviewStatus},
+			#{version},
+			#{packageName}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.server.config.PlayerConfig">
+		update zed_player_config
+		 <set>
+		 	<if test="reviewStatus != null">
+		 		review_status = #{reviewStatus},
+		 	</if>
+		 	<if test="version != null">
+		 		version = #{version},
+		 	</if>
+		 	<if test="packageName != null">
+		 		package_name = #{packageName},
+		 	</if>
+		 </set>
+		 where config_id = #{configId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_config where config_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_config
+		where config_id = #{configId}
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_config
+	</select>
+	
+	<select id="findByVersionAndPackageName" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_config
+		where version = #{version} and	package_name = #{packageName}
+		
+	</select>
+	
+	<select id="findAllByIds" resultMap="Base_Result_Model"  parameterType="String">
+		select
+		<include refid="selectId"/>
+		from zed_player_config where config_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_config
+		<where>
+			1=1
+			<if test="version != null">
+				 and version = #{version}
+			</if>
+			<if test="packageName != null">
+				 and package_name like  '%${packageName}%'
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_config
+		<where>
+			1=1
+			<if test="version != null">
+				 and version = #{version}
+			</if>
+			<if test="packageName != null">
+				 and package_name like  '%${packageName}%'
+			</if>
+		</where>
+	</select>
+		
+</mapper>

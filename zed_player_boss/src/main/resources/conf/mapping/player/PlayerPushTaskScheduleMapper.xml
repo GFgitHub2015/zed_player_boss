@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerPushTaskSchedule">
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.push.PlayerPushTaskSchedule">
+		<id column="schedule_id" property="scheduleId"/> 
+		<result column="task_id" property="taskId" />
+		<result column="end_time" property="endTime" />
+		<result column="status" property="status" />
+		<result column="create_time" property="createTime" />
+		<result column="schedule_timeout" property="scheduleTimeout" />
+		<result column="retries" property="retries" />
+		<result column="target_statement" property="targetStatement" />
+		<result column="target_type" property="targetType" />
+		<result column="content" property="content" />
+		<result column="topic_name" property="topicName" />
+		<result column="condition" property="condition" />
+		<result column="message_comment" property="messageComment" />
+		<result column="title" property="title" />
+		<result column="reminder_type" property="reminderType" />
+		<result column="message_icon" property="messageIcon" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		a.schedule_id,
+		a.task_id,
+		a.end_time,
+		a.status,
+		a.create_time,
+		a.schedule_timeout,
+		a.retries,
+		a.target_statement,
+		a.target_type,
+		a.content,
+		a.topic_name,
+		a.condition,
+		a.message_comment,
+		a.title,
+		a.reminder_type,
+		a.message_icon
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.push.PlayerPushTaskSchedule" >
+		insert into zed_player_push_task_schedule
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="scheduleId != null" >
+				schedule_id,
+			</if>
+			<if test="taskId != null" >
+				task_id,
+			</if>
+			<if test="endTime != null" >
+				end_time,
+			</if>
+			<if test="status != null" >
+				status,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="scheduleTimeout != null" >
+				schedule_timeout,
+			</if>
+			<if test="retries != null" >
+				retries,
+			</if>
+			<if test="targetStatement != null" >
+				target_statement,
+			</if>
+			<if test="targetType != null" >
+				target_type,
+			</if>
+			<if test="content != null" >
+				content,
+			</if>
+			<if test="topicName != null" >
+				topic_name,
+			</if>
+			<if test="condition != null" >
+				condition,
+			</if>
+			<if test="messageComment != null" >
+				message_comment,
+			</if>
+			<if test="title != null" >
+				title,
+			</if>
+			<if test="reminderType != null" >
+				reminder_type,
+			</if>
+			<if test="messageIcon != null" >
+				message_icon,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="scheduleId != null" >
+				#{scheduleId},
+			</if>
+			<if test="taskId != null" >
+				#{taskId},
+			</if>
+			<if test="endTime != null" >
+				#{endTime},
+			</if>
+			<if test="status != null" >
+				#{status},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="scheduleTimeout != null" >
+				#{scheduleTimeout},
+			</if>
+			<if test="retries != null" >
+				#{retries},
+			</if>
+			<if test="targetStatement != null" >
+				#{targetStatement},
+			</if>
+			<if test="targetType != null" >
+				#{targetType},
+			</if>
+			<if test="content != null" >
+				#{content},
+			</if>
+			<if test="topicName != null" >
+				#{topicName},
+			</if>
+			<if test="condition != null" >
+				#{condition},
+			</if>
+			<if test="messageComment != null" >
+				#{messageComment},
+			</if>
+			<if test="title != null" >
+				#{title},
+			</if>
+			<if test="reminderType != null" >
+				#{reminderType},
+			</if>
+			<if test="messageIcon != null" >
+				#{messageIcon},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.push.PlayerPushTaskSchedule">
+		update zed_player_push_task_schedule
+		<set>
+			<if test="taskId != null" >
+				task_id = #{taskId},
+			</if>
+			<if test="endTime != null" >
+				end_time = #{endTime},
+			</if>
+			<if test="status != null" >
+				status = #{status},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="scheduleTimeout != null" >
+				schedule_timeout = #{scheduleTimeout},
+			</if>
+			<if test="retries != null" >
+				retries = #{retries},
+			</if>
+			<if test="targetStatement != null" >
+				target_statement = #{targetStatement},
+			</if>
+			<if test="targetType != null" >
+				target_type = #{targetType},
+			</if>
+			<if test="content != null" >
+				content = #{content},
+			</if>
+			<if test="topicName != null" >
+				topic_name = #{topicName},
+			</if>
+			<if test="condition != null" >
+				condition = #{condition},
+			</if>
+			<if test="messageComment != null" >
+				message_comment = #{messageComment},
+			</if>
+			<if test="title != null" >
+				title = #{title},
+			</if>
+			<if test="reminderType != null" >
+				reminder_type = #{reminderType},
+			</if>
+			<if test="messageIcon != null" >
+				message_icon = #{messageIcon},
+			</if>
+		</set>
+		where schedule_id=#{scheduleId}
+	</update>
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		select 
+		a.schedule_id,
+		a.task_id,
+		a.end_time,
+		a.status,
+		a.create_time,
+		a.schedule_timeout,
+		a.retries,
+		a.target_statement,
+		a.target_type,
+		a.content,
+		a.topic_name,
+		a.condition,
+		a.message_comment,
+		a.title,
+		a.reminder_type,
+		a.message_icon
+		from zed_player_push_task_schedule a
+		<where>
+			1=1
+			<if test="title != null and title != ''">
+				 and a.title like '%${title}%'
+			</if>
+			<if test="status != null">
+				 and a.status = #{status}
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_push_task_schedule a
+		<where>
+			1=1
+			<if test="title != null and title != ''">
+				  and a.title like '%${title}%'
+			</if>
+			<if test="status != null">
+				 and a.status = #{status}
+			</if>
+		</where>
+	</select>
+	
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_push_task_schedule where schedule_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_player_push_task_schedule a where a.schedule_id=#{scheduleId}
+	</select>
+	
+	<select id="findByTaskId" resultType="String">
+		select
+		<include refid="selectId" />
+		from zed_player_push_task_schedule a where a.task_id=#{taskId}
+	</select>
+</mapper>

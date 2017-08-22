@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerSiteAd">
+
+    <resultMap id="Base_Result_Model" type="com.zed.domain.player.playeruser.PlayerSiteAd">
+        <id column="user_id" property="userId"/>
+        <result column="banner_click_url" property="bannerClickUrl"/>
+        <result column="banner_image_url" property="bannerImageUrl" />
+        <result column="view_click_url" property="viewClickUrl" />
+        <result column="view_image_url" property="viewImageUrl"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+
+    <sql id="selectId">
+        user_id,banner_click_url,banner_image_url,view_click_url,view_image_url,create_time,update_time
+    </sql>
+
+
+    <select id="findById" parameterType="String" resultMap="Base_Result_Model">
+        SELECT
+        <include refid="selectId"/>
+        FROM zed_player_site_ad
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="add" parameterType="com.zed.domain.player.playeruser.PlayerSiteAd">
+        INSERT INTO zed_player_site_ad
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="bannerClickUrl != null">
+                banner_click_url,
+            </if>
+            <if test="bannerImageUrl != null">
+                banner_image_url,
+            </if>
+            <if test="viewClickUrl != null">
+                view_click_url,
+            </if>
+            <if test="viewImageUrl != null">
+                view_image_url,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="bannerClickUrl != null">
+                #{bannerClickUrl},
+            </if>
+            <if test="bannerImageUrl != null">
+                #{bannerImageUrl},
+            </if>
+            <if test="viewClickUrl != null">
+                #{viewClickUrl},
+            </if>
+            <if test="viewImageUrl != null">
+                #{viewImageUrl},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="update" parameterType="com.zed.domain.player.playeruser.PlayerSiteAd">
+        update zed_player_site_ad
+        <set>
+            <if test="bannerClickUrl != null">
+                banner_click_url = #{bannerClickUrl},
+            </if>
+            <if test="bannerImageUrl != null">
+                banner_image_url = #{bannerImageUrl},
+            </if>
+            <if test="viewClickUrl != null">
+                view_click_url = #{viewClickUrl},
+            </if>
+            <if test="viewImageUrl != null">
+                view_image_url = #{viewImageUrl},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+</mapper>

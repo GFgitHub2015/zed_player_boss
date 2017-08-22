@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.AccountPhoneCode">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.account.accountphonecode.AccountPhoneCode">
+		<id column="code" property="code"/> 
+		<result column="origin" property="origin" />
+		<result column="user_id" property="userId" />
+		<result column="status" property="status" />
+		<result column="type" property="type" />
+		<result column="phone" property="phone" />
+		<result column="phone_code" property="phoneCode" />
+		<result column="create_time" property="createTime" />
+		<result column="expire_time" property="expireTime" />
+		<result column="area_code" property="areaCode" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		code,origin,user_id,status,type,phone,phone_code,create_time,expire_time,area_code
+	</sql>
+	
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_account_phone_code 
+		<where>
+			1=1
+			<if test="phone != null">
+				and phone = #{phone}
+			</if>
+			<if test="areaCode != null">
+				and area_code = #{areaCode}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="sorting != null">
+				order by ${sorting}
+			</if>
+			<if test="offset != null and limit != null">
+				limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_account_phone_code 
+		<where>
+			1=1
+			<if test="phone != null">
+				and phone = #{phone}
+			</if>
+			<if test="areaCode != null">
+				and area_code = #{areaCode}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+	</select>
+		
+</mapper>

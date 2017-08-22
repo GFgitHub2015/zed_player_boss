@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerUserTalk">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.user.PlayerUserTalk">
+		<id column="talk_id" property="talkId"/>
+		<result column="account_id" property="accountId"/>
+		<result column="text" property="text" />
+		<result column="area_code" property="areaCode" />
+		<result column="phone" property="phone"/>
+		<result column="create_time" property="createTime"/>
+		<result column="contact" property="contact"/>
+	</resultMap>
+
+
+	<sql id="selectId">
+      talk_id,create_time,phone,area_code,text,account_id,contact
+    </sql>
+
+	<sql id="Base_Where_Clause">
+		<where>
+			<if test="text != null and text != ''">
+				AND LOCATE(#{text}, text) > 0
+			</if>
+		</where>
+	</sql>
+
+	<select id="findListByPage" parameterType="com.zed.domain.player.user.PlayerUserTalk" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_user_talk
+		<include refid="Base_Where_Clause" />
+		order By create_time desc
+		<if test="offset != null and limit != null"> limit #{offset},#{limit}</if>
+	</select>
+
+	<select id="findCountByPage" parameterType="com.zed.domain.player.user.PlayerUserTalk" resultType="int">
+		select count(1)
+		from zed_user_talk
+		<include refid="Base_Where_Clause" />
+	</select>
+
+	<select id="findByTalkId" parameterType="String" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId" />
+		from zed_user_talk
+		WHERE  talk_id = #{talkId}
+	</select>
+		
+		
+</mapper>

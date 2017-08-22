@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerLogicalPlayTimes">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.logicalfile.PlayerLogicalPlayTimes">
+			<id column="play_id" property="playId"/> 
+		<result column="file_id" property="fileId"/>	
+		<result column="times" property="times"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		play_id, 
+		file_id,
+		times
+	</sql>
+	
+	<select id="findByFileId" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_logical_play_times
+		where file_id = #{fileId}
+	</select>
+	
+	<select id="findTopFileIds" resultMap="Base_Result_Model">
+		select 
+			<include refid="selectId"/>
+		 from zed_player_logical_play_times order by times desc limit 0, 10
+	</select>
+	
+</mapper>

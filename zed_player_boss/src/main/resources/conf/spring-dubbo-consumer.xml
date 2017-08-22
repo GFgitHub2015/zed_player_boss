@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    
+	<context:property-placeholder location="classpath:conf/*.properties"/>
+    <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+    <dubbo:application name="dubbo-consumer-player-boss"  />
+
+    <!-- 使用multicast广播注册中心暴露发现服务地址 -->
+    <dubbo:registry protocol="zookeeper" address="${zookeeper.serverList}" timeout="6000"/>
+
+    <dubbo:consumer check="false" />
+
+<!--     <dubbo:reference id="resourceApiService" interface="com.zed.api.resource.service.ResourceApiService" version="1.0"/> -->
+
+<!--     <dubbo:reference interface="com.zed.api.account.service.AccountApiService" id="accountApiService" version="1.0" /> -->
+	
+	<!-- 字幕服务 -->
+    <dubbo:reference id="videoSubtitleApiService" interface="com.zed.api.subtitle.service.VideoSubtitleApiService" group="${dubbo.group.ux}" version="1.0" />
+    
+    <!-- s3服务 -->
+    <dubbo:reference id="signatureApiService" interface="com.zed.api.aws.service.SignatureApiService" group="${dubbo.group}" version="1.0"/>
+    <dubbo:reference id="s3UploadApiService" interface="com.zed.api.aws.service.S3UploadApiService" group="${dubbo.group}" version="1.0"/>
+</beans>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.IosPlayerVideoClasses" >
+  <resultMap id="BaseResultMap" type="com.zed.domain.iosplayer.videoclass.IosPlayerVideoClasses" >
+    <result column="class_id" property="classId" />
+    <result column="class_key" property="classKey" />
+    <result column="sort" property="sort"/>
+    <result column="create_time" property="createTime"/>
+    <result column="creater" property="creater"/>
+    <result column="update_time" property="updateTime"/>
+    <result column="updater" property="updater"/>
+    <result column="status" property="status"/>
+    <!--  <result column="origin" property="origin"/>-->
+    <result column="description" property="description"/>
+    <result column="fixed" property="fixed"/>
+    <result column="recommended" property="recommended"/>
+    
+  </resultMap>
+  
+  <resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+  
+  <sql id="selectId" >
+    class_id, 
+    class_key, 
+    sort, 
+    create_time, 
+    creater, 
+    update_time,
+    updater,
+    status,
+    description,
+    fixed,
+    recommended
+  </sql>
+  
+  <insert id="add" parameterType="com.zed.domain.iosplayer.videoclass.IosPlayerVideoClasses" >
+    insert into zed_player_video_classes_ios
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="classId != null" >
+        class_id,
+      </if>
+      <if test="classKey != null" >
+        class_key,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updater != null" >
+        updater,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="fixed != null" >
+        fixed,
+      </if>
+      <if test="recommended != null" >
+        recommended,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="classId != null" >
+        #{classId},
+      </if>
+      <if test="classKey != null" >
+        #{classKey},
+      </if>
+      <if test="sort != null" >
+        #{sort},
+      </if>
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+      <if test="creater != null" >
+        #{creater},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime},
+      </if>
+      <if test="updater != null" >
+        #{updater},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+      <if test="description != null" >
+        #{description},
+      </if>
+      <if test="fixed != null" >
+        #{fixed},
+      </if>
+      <if test="recommended != null" >
+        #{recommended},
+      </if>
+    </trim>
+  </insert>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios 
+		<where>
+			<if test="description != null">
+				and description like '%${description}%'
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="sorting != null">
+				order by ${sorting}
+			</if>
+			<if test="offset != null and limit != null">
+				limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findByClasskey" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios
+		where  status =#{status} and class_key = #{classKey}
+	</select>
+	
+	<select id="findBySortBy" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios
+		<where>
+			1=1
+			<if test="sort != null">
+				and sort
+					<if test="g != null">
+						&gt;
+					</if>
+					<if test="l != null">
+						&lt;
+					</if>
+				#{sort}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="sorting != null">
+				order by ${sorting}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findById" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios
+		where class_id =  #{classId}
+	</select>
+	
+	<select id="getLastSort" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios
+		where  status =#{status} order by sort desc limit 0,1
+	</select>
+	
+	<select id="findBySortAndClasskey" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios
+		<where>
+			<if test="sort != null">
+				and sort = #{sort}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="classKey != null">
+				and class_key = #{classKey}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findByDescriptionAndClassKey" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_video_classes_ios
+		<where>
+			<if test="description != null and description != ''">
+				and description = #{description}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="classKey != null">
+				and class_key = #{classKey}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_video_classes_ios 
+		<where>
+			<if test="description != null">
+				and description like '%${description}%'
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+	</select>
+	
+  <update id="update" parameterType="com.zed.domain.iosplayer.videoclass.IosPlayerVideoClasses" >
+    update zed_player_video_classes_ios
+    <set >
+      <if test="classKey != null" >
+        class_key = #{classKey},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+      <if test="creater != null" >
+        creater = #{creater},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime},
+      </if>
+      <if test="updater != null" >
+        updater = #{updater},
+      </if>
+	  <if test="description != null">
+		description = #{description},
+	  </if>
+	  <if test="fixed != null">
+		fixed = #{fixed},
+	  </if>
+	  <if test="recommended != null">
+		recommended = #{recommended},
+	  </if>
+    </set>
+    where class_id =  #{classId}
+  </update>
+  
+  <update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+				update zed_player_video_classes_ios
+		 		set 
+					sort = #{item.sort},
+					update_time = NOW()
+				 where class_id = #{item.classId}
+    	</foreach>
+	</update>
+  
+  	<update id="deleteById">
+		update zed_player_video_classes_ios
+		 set 
+			status = -1,
+			update_time = NOW()
+		 where class_id in
+		 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<delete id="deleteFromDisk" parameterType="String">
+		delete from zed_player_video_classes_ios where class_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+</mapper>

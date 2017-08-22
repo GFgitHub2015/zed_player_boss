@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.Admin">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.system.Admin">
+		<id column="admin_id" property="adminId"/> 
+		<result column="admin_id" property="adminId"/>
+		<result column="admin_name" property="adminName"/>
+		<result column="role_name" property="roleName"/>
+		<result column="role_key" property="roleKey"/>
+		<result column="admin_password" property="adminPwd"/>		
+		<result column="admin_age" property="adminAge"/>
+		<result column="admin_sex" property="adminSex"/>
+		<result column="admin_phone" property="adminPhone"/>
+		<result column="admin_mail" property="adminMail"/>
+		<result column="last_login_time" property="lastLoginTime"/>
+		<result column="status" property="status"/>		
+		<result column="created_by" property="createdBy"/>	
+		<result column="created_time" jdbcType="DATE" property="createdTime"/>
+		<result column="updated_by" property="updatedBy"/>	
+		<result column="updated_time" property="updatedTime"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		admin_id , 
+		admin_password,
+		admin_name,
+		admin_age,
+		admin_sex,
+		(select role_name from zed_role r , zed_admin_role ur where ur.role_id=r.role_id and u.admin_id = ur.admin_id) as role_name ,
+		(select role_key from zed_role r , zed_admin_role ur where ur.role_id=r.role_id and u.admin_id = ur.admin_id) as role_key ,
+		admin_phone, 
+		admin_mail, 
+		last_login_time ,
+		created_by,
+		created_time,
+		updated_by,
+		updated_time
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.system.Admin">
+		insert into zed_admin (admin_id, admin_name, admin_password, admin_age, admin_sex,admin_phone,admin_mail,last_login_time,status,created_by,created_time,updated_by,updated_time) 
+		values (#{adminId}, #{adminName}, #{adminPwd}, #{adminAge}, #{adminSex}, #{adminPhone}, #{adminMail}, #{lastLoginTime}, #{status}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime})
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.system.Admin">
+		update zed_admin
+		 set 
+		 <if test="adminName != null and adminName != ''">
+			admin_name = #{adminName},
+		 </if>
+		 <if test="adminAge != null and adminAge != ''">
+			admin_age = #{adminAge} ,
+		 </if>
+		 <if test="adminSex != null and adminSex != ''">
+			admin_sex = #{adminSex} ,
+		 </if>
+		 <if test="adminPhone != null and adminPhone != ''">
+			admin_phone = #{adminPhone},
+		 </if>
+		 <if test="adminMail != null and adminMail != ''">
+			admin_mail = #{adminMail},
+		 </if>
+		 <if test="lastLoginTime != null">
+			last_login_time = #{lastLoginTime},
+		 </if>
+		 <if test="status != null and status != ''">
+			status = #{status},
+		 </if>
+		 <if test="adminPwd != null and adminPwd != ''">
+			admin_password = #{adminPwd},
+		 </if>
+			updated_by = #{updatedBy},
+			updated_time = #{updatedTime}
+		 where admin_id = #{adminId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_admin where admin_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model" parameterType="String" >
+		select 
+		<include refid="selectId" />
+		 from zed_admin u 
+		 where admin_id = #{adminId} 
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_admin u
+		<where>
+			1=1
+			<if test="adminId != null and adminId != ''">
+				 and u.admin_id = #{adminId}
+			</if>
+			<if test="roleName != null and roleName != ''">
+				 and (select role_name from zed_role r , zed_admin_role ur where ur.role_id=r.role_id and u.admin_id = ur.admin_id) like '%${roleName}%'
+			</if>
+			<if test="beginTime != null">
+			 	and date_format(u.last_login_time, '%Y-%m-%d') &gt;= #{beginTime}
+			</if>
+			<if test="endTime != null">
+			 	and date_format(u.last_login_time, '%Y-%m-%d') &lt;= #{endTime}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_admin u
+		<where>
+			1=1
+			<if test="adminId != null and adminId != ''">
+				  and u.admin_id = #{adminId}
+			</if>
+			<if test="roleName != null and roleName != ''">
+				 and (select role_name from zed_role r , zed_admin_role ur where ur.role_id=r.role_id and u.admin_id = ur.admin_id) like '%${roleName}%'
+			</if>
+			<if test="beginTime != null">
+			 	and date_format(u.last_login_time, '%Y-%m-%d') &gt;= #{beginTime}
+			 </if>
+			<if test="endTime != null">
+			 	and date_format(u.last_login_time, '%Y-%m-%d') &lt;= #{endTime}
+			 </if>
+		</where>
+	</select>
+		
+</mapper>

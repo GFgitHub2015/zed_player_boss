@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerVideoDestFile">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.video.PlayerVideoDestFile">
+		<id column="file_id" property="fileId"/>
+		<result column="res_id" property="resId"/> 
+		<result column="file_suffix" property="fileSuffix"/>
+		<result column="file_name" property="fileName"/>
+		<result column="thumbnail_url" property="thumbnailUrl"/>
+		<result column="file_size" property="fileSize"/>
+		<result column="file_url" property="fileUrl"/>
+		<result column="duration" property="duration"/>
+		<result column="bit_rate" property="bitRate"/>
+		<result column="frame_rate" property="frameRate"/>
+		<result column="frame_height" property="frameHeight"/>
+		<result column="frame_width" property="frameWidth"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="updater" property="updater"/>
+		<result column="file_type" property="fileType"/>
+		<result column="source_file_id" property="sourceFileId"/>
+		<result column="is_valid" property="isValid"/>
+		<result column="dimension" property="dimension"/>
+		<result column="description" property="description"/>
+		<result column="little_img" property="littleImg"/>
+		
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		file_id,
+		res_id,
+		file_suffix,
+		file_name,
+		thumbnail_url,
+		file_size,
+		file_url,
+		duration,
+		bit_rate,
+		frame_rate,
+		frame_height,
+		frame_width,
+		create_time,
+		update_time,
+		updater,
+		file_type,
+		source_file_id,
+		is_valid,
+		dimension,
+		description,
+		little_img
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.player.video.PlayerVideoDestFile">
+		insert into zed_player_video_dest_file 
+		(
+			file_id,
+			res_id,
+			file_suffix,
+			file_name,
+			thumbnail_url,
+			file_size,
+			file_url,
+			duration,
+			bit_rate,
+			frame_rate,
+			frame_height,
+			frame_width,
+			create_time,
+			update_time,
+			updater,
+			file_type,
+			source_file_id,
+			is_valid,
+			dimension,
+			description
+		) 
+		values 
+		(
+			#{fileId},
+			#{resId},
+			#{fileSuffix},
+			#{fileName},
+			#{thumbnailUrl},
+			#{fileSize},
+			#{fileUrl},
+			#{duration},
+			#{bitRate},
+			#{frameRate},
+			#{frameHeight},
+			#{frameWidth},
+			#{createTime},
+			#{updateTime},
+			#{updater},
+			#{fileType},
+			#{sourceFileId},
+			#{isValid},
+			#{dimension},
+			#{description}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.player.video.PlayerVideoDestFile">
+		update zed_player_video_dest_file
+		<set>
+			<if test="resId != null and resId != ''">
+				res_id = #{resId},
+			</if>
+			<if test="fileSuffix != null and fileSuffix != ''">
+				file_suffix = #{fileSuffix},
+			</if>
+			<if test="fileName != null and fileName != ''">
+				file_name = #{fileName},
+			</if>
+			<if test="thumbnailUrl != null and thumbnailUrl != ''">
+				thumbnail_url = #{thumbnailUrl},
+			</if>
+			<if test="fileSize != null">
+				file_size = #{fileSize},
+			</if>
+			<if test="fileUrl != null and fileUrl != ''">
+				file_url = #{fileUrl},
+			</if>
+			<if test="fileType != null and fileType != ''">
+				file_type = #{fileType},
+			</if>
+			<if test="duration != null">
+				duration = #{duration},
+			</if>
+			<if test="bitRate != null and bitRate != ''">
+				bit_rate = #{bitRate},
+			</if>
+			<if test="frameRate != null and frameRate != ''">
+				frame_rate = #{frameRate},
+			</if>
+			<if test="frameHeight != null and frameHeight != ''">
+				frame_height = #{frameHeight},
+			</if>
+			<if test="frameWidth != null and frameWidth != ''">
+				frame_width = #{frameWidth},
+			</if>
+			<if test="sourceFileId != null and sourceFileId != ''">
+				source_file_id = #{sourceFileId},
+			</if>
+			<if test="createTime != null">
+				create_time= #{createTime},
+			</if>
+			<if test="updateTime != null">
+				update_time=#{updateTime},
+			</if>
+			<if test="isValid != null">
+				is_valid=#{isValid},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+		</set>
+		 where file_id =#{fileId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_video_dest_file where file_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+			<include refid="selectId"/>
+		from zed_player_video_dest_file
+		where file_id =#{fileId}
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_video_dest_file
+		<where>
+			1=1 and is_valid!=-1
+			<if test="resId != null and resId != ''">
+				 and res_id = #{resId}
+			</if>
+			<if test="sourceFileId != null and sourceFileId != ''">
+				 and source_file_id = #{sourceFileId}
+			</if>
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_video_dest_file
+		<where>
+			1=1 and is_valid!=-1
+			<if test="resId != null and resId != ''">
+				 and res_id = #{resId}
+			</if>
+			<if test="sourceFileId != null and sourceFileId != ''">
+				 and source_file_id = #{sourceFileId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllByParams" resultMap="Base_Result_Model">
+		select 
+			<include refid="selectId"/>
+		from zed_player_video_dest_file
+		<where>
+			is_valid!=-1
+			<if test="sourceFileId != null and sourceFileId != ''">
+				 and source_file_id = #{sourceFileId}
+			</if>
+			<if test="fileSuffix != null and fileSuffix != ''">
+				 and file_suffix = #{fileSuffix}
+			</if>
+			<if test="fileType != null">
+				 and file_type = #{fileType}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllBySourceFileIds" resultMap="Base_Result_Model">
+		select 
+			<include refid="selectId"/>
+		from zed_player_video_dest_file
+		<where>
+			is_valid!=-1
+			<if test="sourceFileIds != null and sourceFileIds != ''">
+				and source_file_id in
+				<foreach item="idItem" collection="sourceFileIds" open="(" separator="," close=")">
+					#{idItem}
+				</foreach>
+			</if>
+			<if test="fileSuffix != null and fileSuffix != ''">
+				 and file_suffix = #{fileSuffix}
+			</if>
+			<if test="fileType != null">
+				 and file_type = #{fileType}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getPlayerVideoDestFile" resultMap="Base_Result_Model">
+		select 
+			<include refid="selectId"/>
+		from zed_player_video_dest_file
+		where source_file_id = #{sourceFileId} and file_type = #{fileType} and is_valid!=-1 limit 0,1
+	</select>
+		
+	<update id="updateBatch" parameterType="java.util.List">
+		<foreach item="item" collection="list" index="index" open="" close="" separator=";">
+			update zed_player_video_dest_file
+	 		<set>
+				<if test="item.resId != null and item.resId != ''">
+					res_id = #{item.resId},
+				</if>
+				<if test="item.fileSuffix != null and item.fileSuffix != ''">
+					file_suffix = #{item.fileSuffix},
+				</if>
+				<if test="item.fileName != null and item.fileName != ''">
+					file_name = #{item.fileName},
+				</if>
+				<if test="item.thumbnailUrl != null and item.thumbnailUrl != ''">
+					thumbnail_url = #{item.thumbnailUrl},
+				</if>
+				<if test="item.fileSize != null">
+					file_size = #{item.fileSize},
+				</if>
+				<if test="item.fileUrl != null and item.fileUrl != ''">
+					file_url = #{item.fileUrl},
+				</if>
+				<if test="item.fileType != null">
+					file_type = #{item.fileType},
+				</if>
+				<if test="item.duration != null">
+					duration = #{item.duration},
+				</if>
+				<if test="item.bitRate != null and item.bitRate != ''">
+					bit_rate = #{item.bitRate},
+				</if>
+				<if test="item.frameRate != null and item.frameRate != ''">
+					frame_rate = #{item.frameRate},
+				</if>
+				<if test="item.frameHeight != null and item.frameHeight != ''">
+					frame_height = #{item.frameHeight},
+				</if>
+				<if test="item.frameWidth != null and item.frameWidth != ''">
+					frame_width = #{item.frameWidth},
+				</if>
+				<if test="item.sourceFileId != null and item.sourceFileId != ''">
+					source_file_id = #{item.sourceFileId},
+				</if>
+				<if test="item.createTime != null">
+					create_time= #{item.createTime},
+				</if>
+				<if test="item.isValid != null">
+					is_valid = #{item.isValid},
+				</if>
+				<if test="item.dimension != null">
+					dimension = #{item.dimension},
+				</if>
+				<if test="item.updater != null and item.updater != ''">
+					updater = #{item.updater},
+				</if>
+				<if test="item.description != null and item.description != ''">
+					description = #{item.description},
+				</if>
+				<if test="item.updateTime != null">
+					update_time=#{item.updateTime}
+				</if>
+			</set>
+			where file_id =#{item.fileId}
+    	</foreach>
+	</update>
+	
+	<select id="findBySourceFileIdWithFileSuffix" parameterType="String" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_video_dest_file 
+		where (file_type = '0' or (file_type = '1' and file_suffix = #{fileSuffix})) and is_valid='1' and source_file_id=#{sourceFileId}
+	</select>
+	
+	<update id="updateVideoDestFileDimenssion" parameterType="com.zed.domain.player.video.PlayerVideoDestFile">
+		update zed_player_video_dest_file set dimension=#{dimension}
+		 where source_file_id =#{sourceFileId}
+	</update>
+	
+</mapper>

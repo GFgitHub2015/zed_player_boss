@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.IosPlayerVideo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.iosplayer.video.IosPlayerVideo">
+		<id column="uid" property="uid"/> 
+		<result column="video_id" property="videoId" />
+		<result column="video_name" property="videoName" />
+		<result column="video_memo" property="videoMemo" />
+		<result column="video_url" property="videoUrl" />
+		<result column="video_state" property="videoState" />
+		<result column="video_duration" property="videoDuration" />
+		<result column="icon_url" property="iconUrl" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+		<result column="start_time" property="startTime" />
+		<result column="country_code" property="countryCode" />
+		<result column="dimension_type" property="dimensionType" />
+		<result column="recommend_type" property="recommendType" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<insert id="add" parameterType="com.zed.domain.iosplayer.video.IosPlayerVideo">
+		insert into zed_player_video_ios
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				uid,
+			</if>
+			<if test="videoId != null" >
+				video_id,
+			</if>
+			<if test="videoName != null" >
+				video_name,
+			</if>
+			<if test="videoMemo != null" >
+				video_memo,
+			</if>
+			<if test="videoUrl != null" >
+				video_url,
+			</if>
+			<if test="videoState != null" >
+				video_state,
+			</if>
+			<if test="videoDuration != null" >
+				video_duration,
+			</if>
+			<if test="iconUrl != null" >
+				icon_url,
+			</if>
+			<if test="createUser != null" >
+				create_user,
+			</if>
+			<if test="createTime != null" >
+				create_time,
+			</if>
+			<if test="updateUser != null" >
+				update_user,
+			</if>
+			<if test="updateTime != null" >
+				update_time,
+			</if>
+			<if test="startTime != null" >
+				start_time,
+			</if>
+			<if test="countryCode != null" >
+				country_code,
+			</if>
+			<if test="dimensionType != null" >
+				dimension_type,
+			</if>
+			<if test="recommendType != null" >
+				recommend_type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid != null" >
+				#{uid},
+			</if>
+			<if test="videoId != null" >
+				#{videoId},
+			</if>
+			<if test="videoName != null" >
+				#{videoName},
+			</if>
+			<if test="videoMemo != null" >
+				#{videoMemo},
+			</if>
+			<if test="videoUrl != null" >
+				#{videoUrl},
+			</if>
+			<if test="videoState != null" >
+				#{videoState},
+			</if>
+			<if test="videoDuration != null" >
+				#{videoDuration},
+			</if>
+			<if test="iconUrl != null" >
+				#{iconUrl},
+			</if>
+			<if test="createUser != null" >
+				#{createUser},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateUser != null" >
+				#{updateUser},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="startTime != null" >
+				#{startTime},
+			</if>
+			<if test="countryCode != null" >
+				#{countryCode},
+			</if>
+			<if test="dimensionType != null" >
+				#{dimensionType},
+			</if>
+			<if test="recommendType != null" >
+				#{recommendType},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.iosplayer.video.IosPlayerVideo">
+		update zed_player_video_ios
+		<set>
+			<if test="videoId != null" >
+				video_id = #{videoId},
+			</if>
+			<if test="videoName != null" >
+				video_name = #{videoName},
+			</if>
+			<if test="videoMemo != null" >
+				video_memo = #{videoMemo},
+			</if>
+			<if test="videoUrl != null" >
+				video_url = #{videoUrl},
+			</if>
+			<if test="videoState != null" >
+				video_state = #{videoState},
+			</if>
+			<if test="videoDuration != null" >
+				video_duration = #{videoDuration},
+			</if>
+			<if test="iconUrl != null" >
+				icon_url = #{iconUrl},
+			</if>
+			<if test="createUser != null" >
+				create_user = #{createUser},
+			</if>
+			<if test="createTime != null" >
+				create_time = #{createTime},
+			</if>
+			<if test="updateUser != null" >
+				update_user = #{updateUser},
+			</if>
+			<if test="updateTime != null" >
+				update_time = #{updateTime},
+			</if>
+			<if test="startTime != null" >
+				start_time = #{startTime},
+			</if>
+			<if test="countryCode != null" >
+				country_code = #{countryCode},
+			</if>
+			<if test="dimensionType != null" >
+				dimension_type = #{dimensionType},
+			</if>
+			<if test="recommendType != null" >
+				recommend_type = #{recommendType},
+			</if>
+		</set>
+		where uid=#{uid}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_video_ios where uid=#{uid}
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select * from zed_player_video_ios where uid=#{uid}
+	</select>
+
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		SELECT *  FROM zed_player_video_ios a 
+		<where>
+			<if test="videoName != null" >
+				and a.video_name like  concat('%',#{videoName},'%')
+			</if>
+			<if test="videoId != null" >
+				and a.video_id = #{videoId}
+			</if>
+			<if test="startTime != null" >
+				and a.start_time = #{startTime}
+			</if>
+			<if test="videoState != null" >
+				and a.video_state = #{videoState}
+			</if>
+			<if test="createUser != null" >
+				and a.create_user = #{createUser}
+			</if>
+			<if test="createTime != null" >
+				and a.create_time = #{createTime}
+			</if>
+			<if test="updateUser != null" >
+				and a.update_user = #{updateUser}
+			</if>
+			<if test="updateTime != null" >
+				and a.update_time = #{updateTime}
+			</if>
+			<if test="countryCode != null and countryCode != ''" >
+				and a.country_code = #{countryCode} 
+			</if>
+			<if test="dimensionType != null and dimensionType != ''" >
+				and a.dimension_type = #{dimensionType} 
+			</if>
+			<if test="recommendType != null and recommendType != ''" >
+				and a.recommend_type = #{recommendType} 
+			</if>
+			<if test="videoUrl != null" >
+				and a.video_url like  concat('%',#{videoUrl},'%')
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_video_ios a 
+		<where>
+			<if test="videoName != null" >
+				and a.video_name like  concat('%',#{videoName},'%')
+			</if>
+			<if test="videoId != null" >
+				and a.video_id = #{videoId}
+			</if>
+			<if test="startTime != null" >
+				and a.start_time = #{startTime}
+			</if>
+			<if test="videoState != null" >
+				and a.video_state = #{videoState}
+			</if>
+			<if test="createUser != null" >
+				and a.create_user = #{createUser}
+			</if>
+			<if test="createTime != null" >
+				and a.create_time = #{createTime}
+			</if>
+			<if test="updateUser != null" >
+				and a.update_user = #{updateUser}
+			</if>
+			<if test="updateTime != null" >
+				and a.update_time = #{updateTime}
+			</if>
+			<if test="countryCode != null and countryCode != ''" >
+				and a.country_code = #{countryCode} 
+			</if>
+			<if test="dimensionType != null and dimensionType != ''" >
+				and a.dimension_type = #{dimensionType} 
+			</if>
+			<if test="recommendType != null and recommendType != ''" >
+				and a.recommend_type = #{recommendType} 
+			</if>
+			<if test="videoUrl != null" >
+				and a.video_url like  concat('%',#{videoUrl},'%')
+			</if>
+		</where>
+	</select>
+
+	<select id="getVideoByVideoId" resultMap="Base_Result_Model">
+		select * from zed_player_video_ios where video_id=#{videoId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.IosPlayerPromotionInfo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.iosplayer.promotioninfo.IosPlayerPromotionInfo">
+		<id column="uid" property="uid"/>
+		<result column="image_url" property="imageUrl"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="link" property="link"/>
+		<result column="start_time" property="startTime"/>	
+		<result column="end_time" property="endTime"/>	
+		<result column="status" property="status"/>
+		<result column="create_time" property="createTime"/>
+		<result column="up_time" property="upTime" />
+		<result column="down_time" property="downTime" />
+		<result column="promo_type" property="promoType" />
+		<result column="top_flag" property="topFlag" />
+		<result column="country_code" property="countryCode" />
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<insert id="add" parameterType="com.zed.domain.iosplayer.promotioninfo.IosPlayerPromotionInfo">
+		insert into zed_player_promotion_info_ios (
+			uid,
+			image_url,
+			title,
+			content,
+			link,
+			start_time,
+			end_time,
+			status,
+			create_time,up_time,down_time,promo_type,top_flag,country_code
+		) 
+		values (
+			#{uid},
+			#{imageUrl},
+			#{title}, 
+			#{content}, 
+			#{link}, 
+			#{startTime}, 
+			#{endTime}, 
+			#{status},
+			#{createTime},#{upTime},#{downTime},#{promoType},#{topFlag},#{countryCode}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.iosplayer.promotioninfo.IosPlayerPromotionInfo">
+		update zed_player_promotion_info_ios
+		 <set>
+			 <if test="imageUrl != null and imageUrl != ''">
+				 image_url = #{imageUrl},
+			 </if>
+			 <if test="title != null and title != ''">
+				title = #{title} ,
+			 </if>
+			 <if test="content != null and content != ''">
+				content = #{content} ,
+			 </if>
+			 <if test="link != null and link != ''">
+				link = #{link},
+			 </if>
+			 <if test="startTime != null">
+				start_time = #{startTime},
+			 </if>
+			 <if test="status != null">
+				status = #{status},
+			 </if>
+			 <if test="endTime != null">
+				 end_time = #{endTime},
+			 </if>
+			<if test="upTime != null" >
+				up_time = #{upTime},
+			</if>
+			<if test="downTime != null" >
+				down_time = #{downTime},
+			</if>
+			<if test="promoType != null" >
+				promo_type = #{promoType},
+			</if>
+			<if test="topFlag != null" >
+				top_flag = #{topFlag},
+			</if>
+			<if test="countryCode != null" >
+				country_code = #{countryCode},
+			</if>
+		 </set>
+		 where uid = #{uid}
+	</update>
+	
+	<!-- 修改置顶状态 -->
+	<update id="updateTopFlag" >
+		update zed_player_promotion_info_ios  set top_flag = #{topFlag} 
+		<where>
+			<if test="uid != null and uid != ''">
+				and uid = #{uid}
+			</if>
+		</where>
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_player_promotion_info_ios where uid in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select * 
+		from zed_player_promotion_info_ios
+		where uid = #{uid}
+	</select>
+	
+	<select id="findTopByCountryCode" resultMap="Base_Result_Model">
+		select * 
+		from zed_player_promotion_info_ios
+		where country_code = #{countryCode} and top_flag = 1 and status = 1
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select * 
+		from zed_player_promotion_info_ios
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_Model">
+		select * 
+		from zed_player_promotion_info_ios
+		<where>
+			1=1
+			<if test="title != null and title != ''">
+				 and title like '%${title}%'
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="topFlag != null">
+				 and top_flag = #{topFlag}
+			</if>
+			<if test="uid != null">
+				 and uid = #{uid}
+			</if>
+			<if test="countryCode != null and countryCode != ''">
+				 and country_code = #{countryCode}
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_promotion_info_ios
+		<where>
+			1=1
+			<if test="title != null and title != ''">
+				 and title like '%${title}%'
+			</if>
+			<if test="status != null">
+				 and status = #{status}
+			</if>
+			<if test="countryCode != null and countryCode != ''">
+				 and country_code = #{countryCode}
+			</if>
+			<if test="uid != null">
+				 and uid = #{uid}
+			</if>
+			<if test="topFlag != null">
+				 and top_flag = #{topFlag}
+			</if>
+		</where>
+	</select>
+		
+</mapper>

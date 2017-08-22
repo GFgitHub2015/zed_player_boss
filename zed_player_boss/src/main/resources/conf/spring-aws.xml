@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd
+			">
+	<!-- 采用注释的方式配置bean -->
+	<context:property-placeholder location="classpath:conf/aws.properties"/>
+	
+	<bean name="uploadFileService" class="com.zed.service.common.upload.upload.impl.UploadFileServiceImpl" init-method="init">
+		 <property name="accessKey" value="${aws.accessKeyId}" />
+		 <property name="secretKey" value="${aws.secretKey}" />
+		 <property name="endpoint" value="${aws.endpoint}"/>
+	</bean>
+	
+	<bean name="signatureService" class="com.zed.service.common.signature.impl.SignatureServiceImpl" init-method="init">
+		 <property name="accessKey" value="${aws.signature.accessKeyId}" />
+		 <property name="secretKey" value="${aws.signature.secretKey}" />
+		 <property name="endpoint" value="${aws.signature.endpoint}"/>
+		 <property name="bucketName" value="${aws.signature.bucketName}"/>
+		 <property name="videoAbsolutePath" value="${video.absolute.path}"/>
+		 <property name="playAbsolutePath" value="${play.absolute.path}"/>
+		 <property name="picAbsolutePath" value="${pic.absolute.path}"/>
+		 <property name="picAbsoluteSubPath" value="${pic.absolute.sub.path}"/>
+		 <property name="cdnHostName" value="${cdn.hostname.yplayer}"></property>
+	</bean>
+	
+</beans>

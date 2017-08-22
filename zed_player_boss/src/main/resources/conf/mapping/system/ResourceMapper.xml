@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.Resource"> 
+	
+	<resultMap id="Base_Result_Model" type="com.zed.domain.system.Resource">
+		<id column="resource_id" property="resourceId"/>
+		<result column="resource_id" property="resourceId"/>
+		<result column="resource_name" property="resourceName"/>
+		<result column="partent_id" property="partentId"/>
+		<result column="partent_name" property="partentName"/>		
+		<result column="resource_key" property="resourceKey"/>
+		<result column="resource_url" property="resourceUrl"/>
+<!-- 		<result column="resource_image" property="resourceImage"/> -->
+		<result column="resource_order" property="resourceOrder"/>
+		<result column="resource_level" property="resourceLevel"/>
+		<result column="function_name" property="functionName"/>
+		<result column="enable" property="enable"/>
+		<result column="description" property="description"/>		
+		<result column="created_by" property="createdBy"/>	
+		<result column="created_time" jdbcType="DATE" property="createdTime"/>
+		<result column="updated_by" property="updatedBy"/>	
+		<result column="updated_time" jdbcType="DATE" property="updatedTime"/>
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		resource_id,
+		resource_name,
+		partent_id,
+		(select r.resource_name from zed_resource r where r.resource_id = u.partent_id ) partent_name, 
+		resource_key,
+		resource_url,
+<!-- 		resource_image, -->
+		resource_order,
+		resource_level,
+		description,
+		created_by,
+		created_time,
+		updated_by,
+		updated_time,
+		function_name,
+		enable
+	</sql>
+	
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="resourceName != null and resourceName != ''"> and u.resource_name like '%${resourceName}%'</if>
+				<if test="resourceLevel != null and resourceLevel != ''">and u.resource_level = #{resourceLevel}</if>	
+			</trim>
+		</where>
+	</sql>
+	
+	<insert id="add" parameterType="com.zed.domain.system.Resource">
+		insert into zed_resource (resource_id, resource_name, partent_id, resource_key,resource_url,resource_order, resource_level, description,created_by,created_time,updated_by,updated_time,function_name,enable) 
+		values ((select func_getseq('zed_resource')), #{resourceName}, #{partentId}, #{resourceKey}, #{resourceUrl},#{resourceOrder}, #{resourceLevel},#{description},#{createdBy},#{createdTime}, #{updatedBy}, #{updatedTime}, #{functionName}, #{enable})
+	</insert>
+	
+	<update id="update" parameterType="com.zed.domain.system.Resource">
+		update zed_resource
+		 set 
+		 <if test="resourceName != null and resourceName != ''">
+			resource_name = #{resourceName},
+		 </if>
+		 <if test="partentId != null and partentId != ''">
+			partent_id = #{partentId} ,
+		 </if>
+		 <if test="resourceKey != null and resourceKey != ''">
+			resource_key = #{resourceKey} ,
+		 </if>		 	
+			resource_url = #{resourceUrl,jdbcType=VARCHAR} ,
+<!-- 		 <if test="resourceImage != null and resourceImage != ''"> -->
+<!-- 			resource_image = #{resourceImage} , -->
+<!-- 		 </if>	 -->
+		 <if test="resourceOrder != null and resourceOrder != ''">
+			resource_order = #{resourceOrder} ,
+		 </if>	
+		 <if test="resourceLevel != null and resourceLevel != ''">
+			resource_level = #{resourceLevel} ,
+		 </if>	
+		  <if test="functionName != null and functionName != ''">
+			function_name = #{functionName} ,
+		 </if>	
+		  <if test="enable != null and enable != ''">
+			enable = #{enable} ,
+		 </if>
+		 <if test="description != null and description != ''">
+			description = #{description} ,
+		 </if>		 
+			updated_by = #{updatedBy},
+			updated_time = #{updatedTime}
+		 where resource_id = #{resourceId}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from zed_resource where resource_id in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<select id="findById" resultMap="Base_Result_Model" parameterType="String" >
+		select
+		<include refid="selectId" />
+		from zed_resource u where resource_id = #{resourceId} 
+	</select>
+	
+	<select id="findAll" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId" />
+		from zed_resource u
+		where enable = '1'
+		order by u.resource_level asc 
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select
+		<include refid="selectId" />
+		from zed_resource u
+		<include refid="Base_Where_Clause" />
+		order By u.resource_level asc,u.resource_order asc
+		<if test="offset != null and limit != null"> limit #{offset},#{limit}</if>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_resource u
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	
+	<select id="findResourceByAdminId" parameterType="String" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId" />
+		from  zed_resource u 
+		where
+		resource_id in(
+			select resource_id from
+			zed_resource_role 
+			where role_id in(
+				select role_id from zed_admin_role
+				where admin_id=#{adminId}
+			)
+		)
+		order By resource_order asc
+	</select>
+	
+	<delete id="deleteRoleRescour" parameterType="String">
+		delete from zed_resource_role where role_id=#{roleId}
+	</delete>
+	
+	<insert id="addResourceRole" parameterType="com.zed.domain.system.ResourceRole">
+	insert into zed_resource_role
+	(role_id,resource_id,created_by,created_time,updated_by,updated_time) 
+	values 
+	(#{roleId},#{resourceId},#{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime})
+	</insert>
+	
+	<select id="findListByRoleId" parameterType="String" resultMap="Base_Result_Model">
+		select 
+		<include refid="selectId" />
+		from zed_resource u 
+		where 
+		resource_id in(
+			select resource_id from
+			zed_resource_role 
+			where role_id = #{roleId})
+			order By resource_level asc
+	</select>
+		
+</mapper>

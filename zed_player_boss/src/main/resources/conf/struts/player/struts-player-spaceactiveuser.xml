@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="activeuserstat" namespace="/activeuserstat" extends="common">
+	  
+        <action name="*" class="playerSpaceActiveUserAction" method="{1}">
+        	<interceptor-ref name="tokenStack"/>
+	    	<result name="success" >/WEB-INF/views/contents/player/activeuserstat/{1}.jsp</result>
+	    	<result name="addSpaceActiveUserStat" type="redirectAction" >singleMasterStatList?channel=${channel}</result>
+			<interceptor-ref name="defaultStack" />
+		</action>
+		
+	</package>
+
+</struts>

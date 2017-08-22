@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.AdvertisementData">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.advertisement.AdvertisementData">
+		<id column="uid" property="uid"/> 
+		<result column="ad_requests" property="adRequests" />
+		<result column="ad_response" property="adResponse" />
+		<result column="earnings" property="earnings" />
+		<result column="site_id" property="siteId" />
+		<result column="site_name" property="siteName" />
+		<result column="clicks" property="clicks" />
+		<result column="cost_per_click" property="costPerClick" />
+		<result column="ctr" property="ctr" />
+		<result column="ad_impressions" property="adImpressions" />
+		<result column="ecpm" property="ecpm" />
+		<result column="synch_date" property="synchDate" />
+		<result column="ad_platform" property="adPlatform" />
+		<result column="create_time" property="createTime" />
+		<result column="scale" property="scale" />
+		<result column="ad_impressions_scale" property="adImpressionsScale" />
+		<result column="earnings_scale" property="earningsScale" />
+		<result column="active_count" property="activeCount" />
+		<result column="site_Type_id" property="siteTypeId" />
+		<result column="site_type_name" property="siteTypeName" />
+		<result column="app_name" property="appName" />
+		<result column="channel" property="channel" />
+		
+	</resultMap>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select * from zed_player_ad_data where uid=#{uid}
+	</select>
+	
+	<select id="listPlatformStat" resultMap="Base_Result_Model">
+		SELECT a.ad_platform,SUM(a.earnings) earnings,SUM(IFNULL(e.earnings,a.earnings)) earnings_scale,
+		SUM(a.ad_impressions) ad_impressions ,SUM(IFNULL(e.ad_impressions,a.ad_impressions)) ad_impressions_scale,
+		SUM(a.ad_requests) ad_requests, SUM(a.ad_response) ad_response,SUM(a.clicks) clicks 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		<where>
+			b.channel IS NOT NULL 
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="synchDate != null" >
+				and a.synch_date = #{synchDate}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+			<if test="channels!=null">
+				and b.channel in 
+				<foreach collection="channels" index="index" item="item" open="(" separator="," close=")">
+		        	#{item}
+		    	</foreach>
+			</if>
+		</where>
+		GROUP BY a.ad_platform 
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="listPlatformStatCount" resultType="Integer">
+		SELECT count(*)  from (
+		SELECT count(*)  FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		<where>
+			b.channel IS NOT NULL 
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="synchDate != null" >
+				and a.synch_date = #{synchDate}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+			<if test="channels!=null">
+				and b.channel in 
+				<foreach collection="channels" index="index" item="item" open="(" separator="," close=")">
+		        	#{item}
+		    	</foreach>
+			</if>
+		</where>
+		GROUP BY a.ad_platform 
+		) a
+	</select>
+	
+	
+	<select id="listStatTotal" resultMap="Base_Result_Model">
+		SELECT a.ad_platform,SUM(a.earnings) earnings,SUM(IFNULL(e.earnings,a.earnings)) earnings_scale,
+		SUM(a.ad_impressions) ad_impressions ,SUM(IFNULL(e.ad_impressions,a.ad_impressions)) ad_impressions_scale,
+		SUM(a.ad_requests) ad_requests, SUM(a.ad_response) ad_response,SUM(a.clicks) clicks 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		<where>
+			b.channel IS NOT NULL 
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="synchDate != null" >
+				and a.synch_date = #{synchDate}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+			<if test="channels!=null">
+				and b.channel in 
+				<foreach collection="channels" index="index" item="item" open="(" separator="," close=")">
+		        	#{item}
+		    	</foreach>
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="listAppStat" resultMap="Base_Result_Model">
+		SELECT IFNULL(c.param_value,b.channel) ad_platform,b.channel uid ,SUM(a.earnings) earnings,SUM(IFNULL(e.earnings,a.earnings)) earnings_scale,
+		SUM(a.ad_impressions) ad_impressions ,SUM(IFNULL(e.ad_impressions,a.ad_impressions)) ad_impressions_scale,
+		SUM(a.ad_requests) ad_requests, SUM(a.ad_response) ad_response,SUM(a.clicks) clicks 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		left join zed_player_param c on c.country_code = b.channel 
+		<where>
+			c.param_name ='appname'  AND b.channel IS NOT NULL 
+			<if test="adPlatform != null" >
+				and a.ad_platform = #{adPlatform}
+			</if>
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="synchDate != null" >
+				and a.synch_date = #{synchDate}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+			<if test="channels!=null">
+				and b.channel in 
+				<foreach collection="channels" index="index" item="item" open="(" separator="," close=")">
+		        	#{item}
+		    	</foreach>
+			</if>
+		</where>
+		GROUP BY b.channel 
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="listAppStatCount" resultType="Integer">
+		SELECT count(*)  from (
+		select count(*) 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		left join zed_player_param c on c.country_code = b.channel 
+		<where>
+			c.param_name ='appname'  AND b.channel IS NOT NULL 
+			<if test="adPlatform != null" >
+				and a.ad_platform = #{adPlatform}
+			</if>
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="synchDate != null" >
+				and a.synch_date = #{synchDate}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+			<if test="channels!=null">
+				and b.channel in 
+				<foreach collection="channels" index="index" item="item" open="(" separator="," close=")">
+		        	#{item}
+		    	</foreach>
+			</if>
+		</where>
+		GROUP BY b.channel 
+		) a
+	</select>
+	
+	
+	<insert id="addNewSiteId" parameterType="com.zed.domain.player.advertisement.AdvertisementData">
+		INSERT INTO zed_player_ad_site_info (uid, site_id,site_name,update_time) 
+		SELECT  REPLACE(UUID(),'-','') uid,a.site_id,a.site_name,CURRENT_TIMESTAMP() FROM (
+		SELECT DISTINCT a.site_id,a.site_name FROM  zed_player_ad_data  a 
+		WHERE NOT EXISTS (SELECT 1 FROM zed_player_ad_site_info b WHERE a.site_id = b.site_id)
+		) a 
+	</insert>
+	
+	<select id="getEarningsTotal" resultMap="Base_Result_Model" parameterType="String">
+		SELECT sum(a.earnings) earnings 
+		FROM  zed_player_ad_data  a LEFT JOIN zed_player_ad_site_info b ON a.site_id =  b.site_id  
+		where b.channel =#{channel}
+	</select>
+	
+	<select id="getFaceBookAppIdInfo" resultMap="Base_Result_Model" >
+		SELECT a.country_code ad_platform,a.param_value site_id,b.param_value site_name 
+		FROM zed_player_param a LEFT JOIN zed_player_param b ON a.country_code = b.country_code 
+		WHERE a.param_name='facebookAppid' AND b.param_name='facebookAppSecret' AND a.param_value IS NOT NULL AND b.param_value IS NOT NULL;
+	</select>
+	
+	<update id="updateSiteIdChannel">
+		update zed_player_ad_site_info a set a.channel=#{channel} where a.channel is null  and a.site_id in 
+		<foreach collection="siteIds" index="index" item="item" open="(" separator="," close=")">
+        	#{item}
+    	</foreach>
+	</update>
+	
+	<select id="getChannelByAppname" resultMap="Base_Result_Model" >
+		SELECT a.country_code site_id ,a.param_value site_name 
+		FROM zed_player_param a 
+		<where>
+			a.param_name='appname'  AND a.param_value IS NOT NULL and a.country_code like 'WEBMASTER_%'
+			<if test="appname != null" >
+				and a.param_value like  concat('%',#{appname},'%')
+			</if>
+		</where>
+		 order by a.param_value
+	</select>
+	
+	<select id="getAllPlatForm" resultMap="Base_Result_Model" >
+		SELECT distinct a.ad_platform from zed_player_ad_data a 
+	</select>
+	
+	<select id="getDateStat" resultMap="Base_Result_Model" >
+		SELECT a.synch_date,SUM(a.ad_impressions) ad_impressions ,SUM(a.earnings) earnings,SUM(a.ad_requests) ad_requests 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id
+		<where>
+			 <if test="adPlatform != null" >
+				and a.ad_platform = #{adPlatform}
+			</if>
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+		</where>
+		GROUP BY a.synch_date 
+		order by a.synch_date
+	</select>
+	
+	<select id="listAppSiteDetail" resultMap="Base_Result_Model" >
+		SELECT a.site_id ,IF(c.site_type_name IS NOT NULL AND c.site_type_name!=b.site_name,c.site_type_name,b.site_name ) site_type_name ,
+		SUM(a.earnings) earnings,SUM(IFNULL(e.earnings,a.earnings)) earnings_scale,
+		SUM(a.ad_impressions) ad_impressions ,SUM(IFNULL(e.ad_impressions,a.ad_impressions)) ad_impressions_scale,
+		SUM(a.ad_requests) ad_requests, SUM(a.ad_response) ad_response,SUM(a.clicks) clicks 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		LEFT JOIN zed_player_ad_site_type c ON b.site_type_id = c.uid 
+		<where>
+			 b.channel IS NOT NULL 
+			 <if test="adPlatform != null" >
+				and a.ad_platform = #{adPlatform}
+			</if>
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+		</where>
+		GROUP BY a.site_id 
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+	</select>
+	
+	<select id="listAppSiteTotal" resultMap="Base_Result_Model" >
+		SELECT a.*,c.site_type_name ad_platform  FROM (
+		SELECT b.site_type_id uid ,SUM(a.earnings) earnings,SUM(IFNULL(e.earnings,a.earnings)) earnings_scale,
+		SUM(a.ad_impressions) ad_impressions ,SUM(IFNULL(e.ad_impressions,a.ad_impressions)) ad_impressions_scale,
+		SUM(a.ad_requests) ad_requests, SUM(a.ad_response) ad_response,SUM(a.clicks) clicks 
+		FROM zed_player_ad_data a 
+		LEFT JOIN zed_player_ad_data_scales e ON a.uid=e.uid 
+		LEFT JOIN zed_player_ad_site_info b ON a.site_id = b.site_id 
+		<where>
+			 b.channel IS NOT NULL 
+			 <if test="adPlatform != null" >
+				and a.ad_platform = #{adPlatform}
+			</if>
+			<if test="channel != null" >
+				and b.channel = #{channel}
+			</if>
+			<if test="startDate != null" >
+				and a.synch_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null" >
+				and a.synch_date &lt;= #{endDate}
+			</if>
+		</where>
+		GROUP BY b.site_type_id 
+		) a LEFT JOIN zed_player_ad_site_type c ON a.uid = c.uid 
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+	</select>
+	
+	<select id="listSites" resultMap="Base_Result_Model" >
+		SELECT a.*,IF(b.site_type_name IS NOT NULL AND b.site_type_name!=a.site_name,b.site_type_name,a.site_name ) site_type_name  ,
+		IF(a.channel ='' OR a.channel IS NULL,'无效广告位',c.param_value ) app_name FROM zed_player_ad_site_info a 
+		LEFT JOIN zed_player_ad_site_type b ON a.site_type_id = b.uid 
+		LEFT JOIN zed_player_param c ON a.channel = c.country_code AND c.param_name='appname'
+		<where>
+			<if test="appName != null" >
+				and c.param_value  like CONCAT('%',#{appName},'%') 
+			</if>
+			<if test="siteTypeName != null" >
+				and b.site_type_name  like CONCAT('%',#{siteTypeName},'%') 
+			</if>
+			<if test="siteName != null" >
+				and a.site_name  like CONCAT('%',#{siteName},'%') 
+			</if>
+			<if test="channel != null" >
+				and a.channel  =#{channel}
+			</if>
+		</where>
+		<if test="sorting != null">
+			order by ${sorting}
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	
+	<select id="listSitesCount" resultType="Integer">
+		SELECT count(*)
+		FROM zed_player_ad_site_info a 
+		LEFT JOIN zed_player_ad_site_type b ON a.site_type_id = b.uid 
+		LEFT JOIN zed_player_param c ON a.channel = c.country_code AND c.param_name='appname'
+		<where>
+			<if test="appName != null" >
+				and c.param_value  like CONCAT('%',#{appName},'%') 
+			</if>
+			<if test="channel != null" >
+				and a.channel  =#{channel}
+			</if>
+			<if test="siteTypeName != null" >
+				and b.site_type_name  like CONCAT('%',#{siteTypeName},'%') 
+			</if>
+			<if test="siteName != null" >
+				and a.site_name  like CONCAT('%',#{siteName},'%')
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateSiteChannel">
+		update zed_player_ad_site_info a set a.channel =#{channel} where uid=#{uid}
+	</update>
+	
+	<update id="updateSiteName">
+		update zed_player_ad_site_info a set a.site_type_id = #{siteTypeId} 
+		<if test="siteName != null" >
+			,a.site_name =#{siteName}
+		</if>
+		<where>
+			<if test="uid != null" >
+				and a.uid  =#{uid}
+			</if>
+			<if test="siteId != null" >
+				and a.site_id  =#{siteId}
+			</if>
+		</where>
+	</update>
+	
+	<select id="getSiteTypeName"  resultMap="Base_Result_Model" >
+		select * from zed_player_ad_site_type a where a.site_type_name=#{siteTypeName}
+	</select>
+	
+	<insert id="insertSiteTypeName">
+		insert into zed_player_ad_site_type values(#{uid},#{siteTypeName});
+	</insert>
+</mapper>

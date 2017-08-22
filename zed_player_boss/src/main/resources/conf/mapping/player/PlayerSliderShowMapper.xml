@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerSliderShow" >
+  <resultMap id="BaseResultMap" type="com.zed.domain.player.slidershow.PlayerSliderShow" >
+    <result column="slider_show_id" property="sliderShowId" />
+    <result column="type" property="type"/>
+    <result column="value" property="value"/>
+    <result column="last_time" property="lastTime"/>
+    <result column="creater" property="creater"/>
+    <result column="img_url" property="imgUrl"/>
+    <result column="status" property="status"/>
+    <result column="origin" property="origin"/>
+    <result column="area_code" property="areaCode"/>
+    <result column="sort" property="sort"/>
+    <result column="description" property="description"/>
+    <result column="start_time" property="startTime"/>
+    <result column="end_time" property="endTime"/>
+    
+  </resultMap>
+  
+  <resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+  
+  <sql id="selectId" >
+    slider_show_id, 
+    type, 
+    value, 
+    last_time, 
+    creater, 
+    img_url,
+    status,
+    origin,
+    area_code,
+    sort,
+    description,
+    start_time,
+    end_time
+  </sql>
+  
+  <insert id="add" parameterType="com.zed.domain.player.slidershow.PlayerSliderShow" >
+    insert into zed_player_slider_show
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sliderShowId != null" >
+        slider_show_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="lastTime != null" >
+        last_time,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+      <if test="imgUrl != null" >
+        img_url,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="origin != null" >
+        origin,
+      </if>
+      <if test="areaCode != null" >
+        area_code,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sliderShowId != null" >
+        #{sliderShowId},
+      </if>
+      <if test="type != null" >
+        #{type},
+      </if>
+      <if test="value != null" >
+        #{value},
+      </if>
+      <if test="lastTime != null" >
+        #{lastTime},
+      </if>
+      <if test="creater != null" >
+        #{creater},
+      </if>
+      <if test="imgUrl != null" >
+        #{imgUrl},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+      <if test="origin != null" >
+        #{origin},
+      </if>
+      <if test="areaCode != null" >
+        #{areaCode},
+      </if>
+      <if test="sort != null" >
+        #{sort},
+      </if>
+      <if test="description != null" >
+        #{description},
+      </if>
+      <if test="startTime != null" >
+        #{startTime},
+      </if>
+      <if test="endTime != null" >
+        #{endTime},
+      </if>
+    </trim>
+  </insert>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_slider_show 
+		<where>
+			<if test="description != null">
+				and description like '%${description}%'
+			</if>
+			<if test="type != null">
+				and type = #{type}
+			</if>
+			<if test="creater != null">
+				and creater = #{creater}
+			</if>
+			<if test="status != null">
+				and status != #{status}
+			</if>
+			<if test="areaCode != null">
+				and area_code = #{areaCode}
+			</if>
+			<if test="origin != null">
+				and origin = #{origin}
+			</if>
+			<if test="sorting != null">
+				order by ${sorting}
+			</if>
+			<if test="offset != null and limit != null">
+				limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_slider_show 
+		<where>
+			<if test="description != null">
+				and description like '%${description}%'
+			</if>
+			<if test="type != null">
+				and type = #{type}
+			</if>
+			<if test="creater != null">
+				and creater = #{creater}
+			</if>
+			<if test="status != null">
+				and status != #{status}
+			</if>
+			<if test="areaCode != null">
+				and area_code = #{areaCode}
+			</if>
+			<if test="origin != null">
+				and origin = #{origin}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findById" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_slider_show
+		where slider_show_id = #{sliderShowId}
+	</select>
+	
+	<select id="findBySortAndAreaCode" resultMap="BaseResultMap">
+		select 
+		<include refid="selectId" />
+		from zed_player_slider_show
+		where origin = #{origin} and area_code = #{areaCode} and sort = #{sort} and status =#{status}
+	</select>
+	
+  <update id="update" parameterType="com.zed.domain.player.slidershow.PlayerSliderShow" >
+    update zed_player_slider_show
+    <set >
+      <if test="type != null" >
+        type = #{type},
+      </if>
+      <if test="value != null" >
+        value = #{value},
+      </if>
+      <if test="lastTime != null" >
+        last_time = #{lastTime},
+      </if>
+      <if test="creater != null" >
+        creater = #{creater},
+      </if>
+      <if test="imgUrl != null" >
+        img_url = #{imgUrl},
+      </if>
+      <if test="status != null" >
+        status = #{status},
+      </if>
+      <if test="areaCode != null">
+		area_code = #{areaCode},
+	  </if>
+	  <if test="origin != null">
+		origin = #{origin},
+	  </if>
+	  <if test="sort != null">
+		sort = #{sort},
+	  </if>
+	  <if test="description != null">
+		description = #{description},
+	  </if>
+	  <if test="startTime != null">
+		start_time = #{startTime},
+	  </if>
+	  <if test="endTime != null">
+		end_time = #{endTime},
+	  </if>
+    </set>
+    where slider_show_id = #{sliderShowId}
+  </update>
+  
+  <update id="deleteById">
+		update zed_player_slider_show
+		 set 
+			status = -1,
+			last_time = NOW()
+		 where slider_show_id in
+		 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<update id="updateStatusByUid">
+  	  update zed_player_slider_show set status = #{status}, last_time = NOW() where slider_show_id = #{sliderShowId}
+  </update>
+  
+</mapper>

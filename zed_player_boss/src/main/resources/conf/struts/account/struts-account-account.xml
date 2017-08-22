@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="account" namespace="/account" extends="common">
+	  
+        <action name="*" class="accountAction" method="{1}">
+	    	<result name="success" >/WEB-INF/views/contents/account/account/{1}.jsp</result>
+		</action>
+		<action name="getPhoneFlag" class="accountAction" method="getPhoneFlag"/>
+		<action name="getNickNameFlag" class="accountAction" method="getNickNameFlag"/>
+		<action name="getFlag" class="accountAction" method="getFlag"/>
+	</package>
+
+</struts>

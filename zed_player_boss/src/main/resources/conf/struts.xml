@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<include file="conf/struts/**/struts-*.xml" />
+
+    <constant name="struts.action.extension" value="action" />
+<!--     <constant name="struts.enable.DynamicMethodInvocation" value="true"></constant> -->
+    <constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+    <constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
+    <constant name="struts.ui.theme" value="simple"/>
+<!--     <constant name="struts.action.excludePattern" value="/ShitServlet,.*\\.nofilter" /> -->
+
+    <!-- Set 'true' in production. No browser cache with static content  -->
+    <constant name="struts.serve.static.browserCache" value="true"/>
+    <!-- Set 'false' in production. Reload struts.xml -->
+    <constant name="struts.configuration.xml.reload" value="true"/>
+    <!-- Set 'false' in production. Printout detailed info in DEV -->
+    <constant name="struts.devMode" value="false" />
+    <!-- 定义上传文件临时存放路径 -->
+    <constant name="struts.multipart.saveDir" value="/ops/deploy/player/zed_player_boss/upload"/>
+    <!-- 定义上传文件最大文件大小 -->
+    <constant name="struts.multipart.maxSize" value="100000000" />
+    
+    
+    <package name="myStruts" extends="struts-default">
+               
+	      <interceptors>
+	          <interceptor name="submittedToken" class="com.zed.interceptor.SubmittedTokenInterceptor"/>
+	          <interceptor name="authority" class="com.zed.interceptor.AuthorityInterceptor"/>
+		      <interceptor-stack name="annotatedStack">
+		        <interceptor-ref name="exception"/>
+		                <interceptor-ref name="alias"/>
+		                <interceptor-ref name="servletConfig"/>
+		                <interceptor-ref name="i18n"/>
+		                <interceptor-ref name="prepare"/>
+		                <interceptor-ref name="chain"/>
+		                <interceptor-ref name="debugging"/>
+		                <interceptor-ref name="scopedModelDriven"/>
+		                <interceptor-ref name="modelDriven"/>
+		                <interceptor-ref name="fileUpload">
+<!-- 		                	文件过滤  -->
+<!-- 	               			<param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg</param> -->
+	               			
+		                	<!-- 文件大小, 以字节为单位 -->
+<!-- 		                	<param name="maximumSize">2097152</param> -->
+		                </interceptor-ref>
+		                <interceptor-ref name="checkbox"/>
+		                <interceptor-ref name="multiselect"/>
+		                <interceptor-ref name="staticParams"/>
+		                <interceptor-ref name="actionMappingParams"/>
+		                <interceptor-ref name="params">
+		                  <param name="excludeParams">dojo\..*,^struts\..*</param>
+		          </interceptor-ref>
+		          <interceptor-ref name="conversionError"/>
+		          <interceptor-ref name="annotationWorkflow"/>
+		                <interceptor-ref name="validation">
+		                    <param name="excludeMethods">input,back,cancel,browse</param>
+		                </interceptor-ref>
+		                <interceptor-ref name="workflow">
+		                    <param name="excludeMethods">input,back,cancel,browse</param>
+		                </interceptor-ref>
+		                <interceptor-ref name="authority"></interceptor-ref>
+		          </interceptor-stack>
+	      <interceptor-stack name="tokenStack">
+	        <interceptor-ref name="exception"/>
+	                <interceptor-ref name="alias"/>
+	                <interceptor-ref name="servletConfig"/>
+	                <interceptor-ref name="i18n"/>
+	                <interceptor-ref name="prepare"/>
+	                <interceptor-ref name="chain"/>
+	                <interceptor-ref name="debugging"/>
+	                <interceptor-ref name="scopedModelDriven"/>
+	                <interceptor-ref name="modelDriven"/>
+	                <!-- interceptor-ref name="fileUpload"/-->
+	                <interceptor-ref name="checkbox"/>
+	                <interceptor-ref name="multiselect"/>
+	                <interceptor-ref name="staticParams"/>
+	                <interceptor-ref name="actionMappingParams"/>
+	                <interceptor-ref name="params">
+	                    <param name="excludeParams">dojo\..*,^struts\..*</param>
+	                </interceptor-ref>
+	                <interceptor-ref name="conversionError"/>
+	        <interceptor-ref name="annotationWorkflow"/>
+	        <interceptor-ref name="submittedToken">
+	        	<param name="includeMethods">add,update</param>
+	        </interceptor-ref>
+	                <interceptor-ref name="validation">
+	                    <param name="excludeMethods">input,back,cancel,browse</param>
+	                </interceptor-ref>
+	                <interceptor-ref name="workflow">
+	                    <param name="excludeMethods">input,back,cancel,browse</param>
+	                </interceptor-ref>
+	                <interceptor-ref name="authority"></interceptor-ref>
+	      </interceptor-stack>
+	   	 </interceptors>
+	    <default-interceptor-ref name="annotatedStack"/>
+	    
+
+  
+    </package>
+    
+    <!-- 引入Struts2的默认的配置文件； -->
+	<include file="struts-default.xml" />
+	<include file="struts-plugin.xml" />
+	
+</struts>

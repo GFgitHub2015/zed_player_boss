@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.PlayerClientInfo">
+
+	<resultMap id="Base_Result_Model" type="com.zed.domain.player.clientinfo.PlayerClientInfo">
+		<id column="client_id" property="clientId"/> 
+		<result column="user_id" property="userId"/>	
+		<result column="report_time" property="reportTime"/>	
+		<result column="imei" property="imei"/>	
+		<result column="imsi" property="imsi"/>	
+		<result column="model" property="model"/>	
+		<result column="operator" property="operator"/>	
+		<result column="sys_type" property="sysType"/>	
+		<result column="sys_version" property="sysVersion"/>	
+		<result column="app_version" property="appVersion"/>	
+		<result column="net_type" property="netType"/>	
+		<result column="channel" property="channel"/>	
+		<result column="area_code" property="areaCode"/>	
+		<result column="device_token" property="deviceToken"/>	
+		<result column="package_name" property="packageName"/>	
+		<result column="client_ip" property="clientIp"/>
+		<result column="sys_language" property="sysLanguage"/>	
+		<result column="lon" property="lon"/>
+		<result column="lat" property="lat"/>	
+	</resultMap>
+	
+	<resultMap type="HashMap" id="Base_Result_HashMap"></resultMap>
+	
+	<sql id="selectId">
+		client_id, 
+		user_id,
+		report_time,
+		imei,
+		imsi,
+		model,
+		operator,
+		sys_type,
+		sys_version,
+		app_version,
+		net_type,
+		channel,
+		area_code,
+		device_token,
+		package_name,
+		client_ip,
+		sys_language,
+		lon,
+		lat
+	</sql>
+	
+	<select id="findById" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_client_info
+		where client_id = #{clientId}
+	</select>
+	
+	<select id="findByUserId" resultMap="Base_Result_Model">
+		select
+		<include refid="selectId"/>
+		from zed_player_client_info
+		where user_id = #{userId}
+	</select>
+	
+	<select id="findAppVersionList" resultType="String">
+		select app_version
+		from zed_player_client_info where app_version is not null and app_version!= '' and app_version>0 group by app_version
+	</select>
+	
+	<select id="findChannelList" resultType="String">
+		select channel
+		from zed_player_client_info where channel is not null and channel!= '' group by channel
+	</select>
+	
+	<select id="findAreaCodeList" resultType="String">
+		select area_code
+		from zed_player_client_info where area_code is not null and area_code!= '' group by area_code
+	</select>
+	
+	<select id="findPackageName" resultType="String">
+		select package_name
+		from zed_player_client_info where package_name is not null and package_name!= '' group by package_name
+	</select>
+	
+	<select id="findLanguageList" resultType="String">
+		select sys_language
+		from zed_player_client_info where sys_language is not null and sys_language!= '' group by sys_language
+	</select>
+	
+	<select id="findSysType" resultType="String">
+		select sys_type
+		from zed_player_client_info where sys_type is not null and sys_type!= '' group by sys_type
+	</select>
+	
+	<select id="findListByPage" resultMap="Base_Result_HashMap">
+		select 
+			<include refid="selectId"/>
+		from zed_player_client_info
+		<where>
+			1=1
+			<if test="sorting != null">
+				 order by ${sorting} 
+			</if>
+			<if test="offset != null and limit != null">
+			 	 limit #{offset},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCountByPage" resultType="Integer">
+		select count(1)
+		from zed_player_client_info
+		<where>
+			1=1
+		</where>
+	</select>
+	
+</mapper>
